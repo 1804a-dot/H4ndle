@@ -1,0 +1,191 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero": {
+      "type": "h4-hero",
+      "settings": {}
+    },
+    "manifiesto": {
+      "type": "h4-manifiesto",
+      "disabled": true,
+      "settings": {}
+    },
+    "transformacion": {
+      "type": "h4-transformacion",
+      "disabled": true,
+      "settings": {}
+    },
+    "ventas": {
+      "type": "h4-ventas",
+      "settings": {}
+    },
+    "sistema": {
+      "type": "h4-sistema",
+      "settings": {}
+    },
+    "ritual": {
+      "type": "h4-ritual",
+      "settings": {}
+    },
+    "cocinas": {
+      "type": "h4-cocinas",
+      "settings": {}
+    },
+    "crear": {
+      "type": "h4-crear",
+      "settings": {}
+    },
+    "tienda": {
+      "type": "h4-tienda",
+      "settings": {}
+    },
+    "garantia": {
+      "type": "h4-garantia",
+      "settings": {}
+    },
+    "testimonios": {
+      "type": "h4-testimonios",
+      "blocks": {
+        "testimonio_hamburguesas": {
+          "type": "testimonio",
+          "settings": {
+            "nombre": "Mariana Soto",
+            "negocio": "Smash Lumbre",
+            "ciudad": "Naucalpan",
+            "texto": "Pedí mis primeras 50 cajas con mi logo para probar. El precio estaba a la vista, pagué en línea y no tuve que cotizar nada. Llegaron en 4 días hábiles.",
+            "estrellas": 5
+          }
+        },
+        "testimonio_sushi": {
+          "type": "testimonio",
+          "settings": {
+            "nombre": "Daniela Ortega",
+            "negocio": "Sushi Marea",
+            "ciudad": "Coyoacán",
+            "texto": "Aprobé el diseño antes de que lo produjeran. Mis rolls ahora salen en cajas con mi marca y varios clientes ya las suben a sus historias.",
+            "estrellas": 5
+          }
+        },
+        "testimonio_pizza": {
+          "type": "testimonio",
+          "settings": {
+            "nombre": "Ricardo Barrera",
+            "negocio": "Horno Rústico Pizza",
+            "ciudad": "Tlalnepantla",
+            "texto": "Antes mis pizzas salían en cajas blancas que cualquiera tiene. Ahora la tapa lleva mi logo y sé cuánto cuesta cada caja antes de comprar.",
+            "estrellas": 5
+          }
+        },
+        "testimonio_pan_dulce": {
+          "type": "testimonio",
+          "settings": {
+            "nombre": "Lucía Hernández",
+            "negocio": "Panadería Dulce Hogar",
+            "ciudad": "Azcapotzalco",
+            "texto": "Me tardé un poco en decidir el diseño, pero poder aprobarlo antes de producir me dio confianza. Empecé con 50 piezas y las bolsas quedaron muy bonitas.",
+            "estrellas": 4
+          }
+        },
+        "testimonio_tacos": {
+          "type": "testimonio",
+          "settings": {
+            "nombre": "Jorge Medina",
+            "negocio": "Tacos El Trompo Dorado",
+            "ciudad": "Ecatepec",
+            "texto": "Pensé que los empaques con mi nombre eran para negocios grandes. Elegí la charola, pagué en línea y mis tacos ya salen con mi logo y espacio para las salsas.",
+            "estrellas": 5
+          }
+        },
+        "testimonio_alitas": {
+          "type": "testimonio",
+          "settings": {
+            "nombre": "Karen Villalobos",
+            "negocio": "Alitas Picoteo",
+            "ciudad": "Nezahualcóyotl",
+            "texto": "Mis clientes comparten la caja de alitas en redes, sin que yo pague anuncios. Con la reposición automática ya no me quedo sin empaque en fin de semana.",
+            "estrellas": 5
+          }
+        },
+        "testimonio_cafe": {
+          "type": "testimonio",
+          "settings": {
+            "nombre": "Andrés Cárdenas",
+            "negocio": "Café Grano Vivo",
+            "ciudad": "Benito Juárez",
+            "texto": "Los vasos con mi marca le cambiaron la cara a mi barra y vi el precio antes de pedir. Llegaron en 4 días hábiles; la próxima vez subo mi logo desde el inicio.",
+            "estrellas": 4
+          }
+        },
+        "testimonio_bowls": {
+          "type": "testimonio",
+          "settings": {
+            "nombre": "Paola Ibarra",
+            "negocio": "Raíz Bowls",
+            "ciudad": "Miguel Hidalgo",
+            "texto": "Mis bowls salen en ensaladeras con tapa y mi marca impresa, y los clientes les toman foto. Pagar todo en línea y saber el total desde el inicio me ahorra tiempo.",
+            "estrellas": 5
+          }
+        }
+      },
+      "block_order": [
+        "testimonio_hamburguesas",
+        "testimonio_sushi",
+        "testimonio_pizza",
+        "testimonio_pan_dulce",
+        "testimonio_tacos",
+        "testimonio_alitas",
+        "testimonio_cafe",
+        "testimonio_bowls"
+      ],
+      "settings": {
+        "kicker": "Lo que dicen nuestros clientes",
+        "titulo": "Cuando tu empaque tiene marca,",
+        "palabra_subrayada": "se nota.",
+        "subtitulo": "Las pymes y los Dark Kitchens de la Ciudad de México cuentan cómo es pedir su empaque con marca en línea.",
+        "nota": "Testimonios de ejemplo de la página de prueba. Se reemplazan por reseñas de clientes reales antes del lanzamiento.",
+        "testimonios_verificados": false
+      }
+    },
+    "crece": {
+      "type": "h4-crece",
+      "settings": {}
+    },
+    "marquee": {
+      "type": "h4-marquee",
+      "settings": {}
+    },
+    "faq": {
+      "type": "h4-faq",
+      "settings": {}
+    },
+    "final": {
+      "type": "h4-final",
+      "settings": {}
+    }
+  },
+  "order": [
+    "ritual",
+    "manifiesto",
+    "transformacion",
+    "cocinas",
+    "hero",
+    "ventas",
+    "crear",
+    "tienda",
+    "garantia",
+    "testimonios",
+    "crece",
+    "marquee",
+    "faq",
+    "sistema",
+    "final"
+  ]
+}

@@ -1,0 +1,25 @@
+{%- comment -%} H4 · Activar cuenta {%- endcomment -%}
+<section class="st-section" data-tone="light" aria-labelledby="st-activate-title">
+  <div class="wrap st-form-wrap">
+    <p class="kicker"><svg aria-hidden="true"><use href="#four"/></svg>Mi cuenta</p>
+    <h1 class="display h2" id="st-activate-title">{{ 'customer.activate_account.title' | t }}</h1>
+    <p class="lede">{{ 'customer.activate_account.subtext' | t }}</p>
+
+    {%- form 'activate_customer_password', class: 'st-form st-mt' -%}
+      {%- if form.errors -%}
+      <div class="st-error-list">{{ form.errors | default_errors }}</div>
+      {%- endif -%}
+
+      <label for="CustomerPassword">{{ 'customer.activate_account.password' | t }}</label>
+      <input type="password" id="CustomerPassword" name="customer[password]" autocomplete="new-password" required>
+
+      <label for="CustomerPasswordConfirmation">{{ 'customer.activate_account.password_confirm' | t }}</label>
+      <input type="password" id="CustomerPasswordConfirmation" name="customer[password_confirmation]" autocomplete="new-password" required>
+
+      <div class="st-actions-row">
+        <button type="submit" class="btn">{{ 'customer.activate_account.submit' | t }}</button>
+        <button type="submit" name="decline" class="st-sm-link">{{ 'customer.activate_account.decline' | t }}</button>
+      </div>
+    {%- endform -%}
+  </div>
+</section>

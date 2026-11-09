@@ -1,0 +1,119 @@
+{%- comment -%} H4 · Direcciones — alta, edición y borrado, todo funcional sin JS (formulario nativo "customer_address") {%- endcomment -%}
+<section class="st-section" data-tone="light" aria-labelledby="st-addresses-title">
+  <div class="wrap">
+    <div class="st-account-head">
+      <div>
+        <p class="kicker"><svg aria-hidden="true"><use href="#four"/></svg>Mi cuenta</p>
+        <h1 class="display h2" id="st-addresses-title">{{ 'customer.addresses.title' | t }}</h1>
+      </div>
+      <a class="st-sm-link" href="{{ routes.account_url }}">{{ 'customer.account.return' | t }}</a>
+    </div>
+
+    <details class="st-addr-new" open>
+      <summary>{{ 'customer.addresses.add_new' | t }}</summary>
+      {%- form 'customer_address', customer.new_address, class: 'st-form st-mt' -%}
+        {%- if form.errors -%}
+        <div class="st-error-list">{{ form.errors | default_errors }}</div>
+        {%- endif -%}
+        <label for="AddressFirstNameNew">{{ 'customer.addresses.first_name' | t }}</label>
+        <input type="text" id="AddressFirstNameNew" name="address[first_name]" value="{{ form.first_name }}" autocomplete="given-name">
+
+        <label for="AddressLastNameNew">{{ 'customer.addresses.last_name' | t }}</label>
+        <input type="text" id="AddressLastNameNew" name="address[last_name]" value="{{ form.last_name }}" autocomplete="family-name">
+
+        <label for="AddressCompanyNew">{{ 'customer.addresses.company' | t }}</label>
+        <input type="text" id="AddressCompanyNew" name="address[company]" value="{{ form.company }}" autocomplete="organization">
+
+        <label for="AddressLine1New">{{ 'customer.addresses.address1' | t }}</label>
+        <input type="text" id="AddressLine1New" name="address[address1]" value="{{ form.address1 }}" autocomplete="address-line1" required>
+
+        <label for="AddressLine2New">{{ 'customer.addresses.address2' | t }}</label>
+        <input type="text" id="AddressLine2New" name="address[address2]" value="{{ form.address2 }}" autocomplete="address-line2">
+
+        <label for="AddressCityNew">{{ 'customer.addresses.city' | t }}</label>
+        <input type="text" id="AddressCityNew" name="address[city]" value="{{ form.city }}" autocomplete="address-level2" required>
+
+        <label for="AddressProvinceNew">{{ 'customer.addresses.province' | t }}</label>
+        <input type="text" id="AddressProvinceNew" name="address[province]" value="{{ form.province }}" autocomplete="address-level1">
+
+        <label for="AddressZipNew">{{ 'customer.addresses.zip' | t }}</label>
+        <input type="text" id="AddressZipNew" name="address[zip]" value="{{ form.zip }}" autocomplete="postal-code" required>
+
+        <label for="AddressCountryNew">{{ 'customer.addresses.country' | t }}</label>
+        <select id="AddressCountryNew" name="address[country]" autocomplete="country">{{ country_option_tags }}</select>
+
+        <label for="AddressPhoneNew">{{ 'customer.addresses.phone' | t }}</label>
+        <input type="tel" id="AddressPhoneNew" name="address[phone]" value="{{ form.phone }}" autocomplete="tel">
+
+        <label class="st-check"><input type="checkbox" name="address[default]" value="1"> {{ 'customer.addresses.set_default' | t }}</label>
+
+        <div class="st-actions-row">
+          <button type="submit" class="btn">{{ 'customer.addresses.add' | t }}</button>
+        </div>
+      {%- endform -%}
+    </details>
+
+    {%- if customer.addresses.size == 0 -%}
+    <p class="st-empty-note">No tienes direcciones guardadas todavía.</p>
+    {%- else -%}
+    <div class="st-addr-grid">
+      {%- for address in customer.addresses -%}
+      <div class="st-addr-card{% if address == customer.default_address %} is-default{% endif %}">
+        {%- if address == customer.default_address -%}<span class="st-badge">{{ 'customer.addresses.default' | t }}</span>{%- endif -%}
+        <p>{{ address.name }}</p>
+        {%- if address.company != blank -%}<p>{{ address.company }}</p>{%- endif -%}
+        <p>{{ address.address1 }}{% if address.address2 != blank %}, {{ address.address2 }}{% endif %}</p>
+        <p>{{ address.city }}, {{ address.province }}, {{ address.zip }}</p>
+        <p>{{ address.country }}</p>
+        {%- if address.phone != blank -%}<p>{{ address.phone }}</p>{%- endif -%}
+
+        <details class="st-addr-edit">
+          <summary>{{ 'customer.addresses.edit' | t }}</summary>
+          {%- form 'customer_address', address, class: 'st-form st-mt' -%}
+            {%- if form.errors -%}
+            <div class="st-error-list">{{ form.errors | default_errors }}</div>
+            {%- endif -%}
+            <label for="AddressFirstName_{{ address.id }}">{{ 'customer.addresses.first_name' | t }}</label>
+            <input type="text" id="AddressFirstName_{{ address.id }}" name="address[first_name]" value="{{ address.first_name }}" autocomplete="given-name">
+
+            <label for="AddressLastName_{{ address.id }}">{{ 'customer.addresses.last_name' | t }}</label>
+            <input type="text" id="AddressLastName_{{ address.id }}" name="address[last_name]" value="{{ address.last_name }}" autocomplete="family-name">
+
+            <label for="AddressCompany_{{ address.id }}">{{ 'customer.addresses.company' | t }}</label>
+            <input type="text" id="AddressCompany_{{ address.id }}" name="address[company]" value="{{ address.company }}" autocomplete="organization">
+
+            <label for="AddressLine1_{{ address.id }}">{{ 'customer.addresses.address1' | t }}</label>
+            <input type="text" id="AddressLine1_{{ address.id }}" name="address[address1]" value="{{ address.address1 }}" autocomplete="address-line1" required>
+
+            <label for="AddressLine2_{{ address.id }}">{{ 'customer.addresses.address2' | t }}</label>
+            <input type="text" id="AddressLine2_{{ address.id }}" name="address[address2]" value="{{ address.address2 }}" autocomplete="address-line2">
+
+            <label for="AddressCity_{{ address.id }}">{{ 'customer.addresses.city' | t }}</label>
+            <input type="text" id="AddressCity_{{ address.id }}" name="address[city]" value="{{ address.city }}" autocomplete="address-level2" required>
+
+            <label for="AddressProvince_{{ address.id }}">{{ 'customer.addresses.province' | t }}</label>
+            <input type="text" id="AddressProvince_{{ address.id }}" name="address[province]" value="{{ address.province }}" autocomplete="address-level1">
+
+            <label for="AddressZip_{{ address.id }}">{{ 'customer.addresses.zip' | t }}</label>
+            <input type="text" id="AddressZip_{{ address.id }}" name="address[zip]" value="{{ address.zip }}" autocomplete="postal-code" required>
+
+            <label for="AddressCountry_{{ address.id }}">{{ 'customer.addresses.country' | t }}</label>
+            <select id="AddressCountry_{{ address.id }}" name="address[country]" autocomplete="country" data-default="{{ address.country }}">{{ country_option_tags }}</select>
+
+            <label for="AddressPhone_{{ address.id }}">{{ 'customer.addresses.phone' | t }}</label>
+            <input type="tel" id="AddressPhone_{{ address.id }}" name="address[phone]" value="{{ address.phone }}" autocomplete="tel">
+
+            <label class="st-check"><input type="checkbox" name="address[default]" value="1"{% if address == customer.default_address %} checked{% endif %}> {{ 'customer.addresses.set_default' | t }}</label>
+
+            <div class="st-actions-row">
+              <button type="submit" class="btn sm">{{ 'customer.addresses.update' | t }}</button>
+              <button type="submit" name="_method" value="delete" class="st-sm-link" onclick="return confirm('{{ 'customer.addresses.delete_confirm' | t }}')">{{ 'customer.addresses.delete' | t }}</button>
+            </div>
+          {%- endform -%}
+        </details>
+      </div>
+      {%- endfor -%}
+    </div>
+    {%- endif -%}
+  </div>
+</section>

@@ -1,0 +1,84 @@
+{%- comment -%} H4 · Detalle de pedido {%- endcomment -%}
+<section class="st-section" data-tone="light" aria-labelledby="st-order-title">
+  <div class="wrap">
+    <p class="kicker"><svg aria-hidden="true"><use href="#four"/></svg>Mi cuenta</p>
+    <h1 class="display h2" id="st-order-title">{{ 'customer.order.title' | t: name: order.name }}</h1>
+
+    {%- if order.cancelled -%}
+    {%- assign order_cancelled_date = order.cancelled_at | date: '%d/%m/%Y' -%}
+    <p class="st-error-list">
+      {{ 'customer.order.cancelled_html' | t: date: order_cancelled_date }}
+      {%- if order.cancel_reason -%}<br>{{ 'customer.order.cancelled_reason' | t: reason: order.cancel_reason }}{%- endif -%}
+    </p>
+    {%- else -%}
+    {%- assign order_created_date = order.created_at | date: '%d de %B de %Y' -%}
+    <p class="lede">{{ 'customer.order.date_html' | t: date: order_created_date }}</p>
+    {%- endif -%}
+
+    <div class="st-order-summary">
+      <div><span>{{ 'customer.orders.payment_status' | t }}</span><b>{{ order.financial_status_label }}</b></div>
+      <div><span>{{ 'customer.orders.fulfillment_status' | t }}</span><b>{{ order.fulfillment_status_label }}</b></div>
+      <div><span>{{ 'customer.order.total' | t }}</span><b>{{ order.total_price | money }}</b></div>
+    </div>
+
+    <table class="st-table">
+      <thead>
+        <tr>
+          <th>{{ 'customer.order.product' | t }}</th>
+          <th>{{ 'customer.order.price' | t }}</th>
+          <th>{{ 'customer.order.quantity' | t }}</th>
+          <th>{{ 'customer.order.total' | t }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {%- for line_item in order.line_items -%}
+        <tr>
+          <td>
+            {%- if line_item.product -%}<a href="{{ line_item.product.url }}">{{ line_item.title }}</a>{%- else -%}{{ line_item.title }}{%- endif -%}
+            {%- unless line_item.variant.title == 'Default Title' -%}<br><span class="st-note">{{ line_item.variant.title }}</span>{%- endunless -%}
+          </td>
+          <td>{{ line_item.original_price | money }}</td>
+          <td>{{ line_item.quantity }}</td>
+          <td>{{ line_item.original_line_price | money }}</td>
+        </tr>
+        {%- endfor -%}
+      </tbody>
+      <tfoot>
+        <tr><td colspan="3">{{ 'customer.order.subtotal' | t }}</td><td>{{ order.subtotal_price | money }}</td></tr>
+        {%- for shipping_method in order.shipping_methods -%}
+        <tr><td colspan="3">{{ 'customer.order.shipping' | t }} ({{ shipping_method.title }})</td><td>{{ shipping_method.price | money }}</td></tr>
+        {%- endfor -%}
+        {%- if order.total_discounts > 0 -%}
+        <tr><td colspan="3">{{ 'customer.order.discount' | t }}</td><td>−{{ order.total_discounts | money }}</td></tr>
+        {%- endif -%}
+        {%- for tax_line in order.tax_lines -%}
+        <tr><td colspan="3">{{ 'customer.order.tax' | t }} ({{ tax_line.title }})</td><td>{{ tax_line.price | money }}</td></tr>
+        {%- endfor -%}
+        <tr><td colspan="3"><b>{{ 'customer.order.total' | t }}</b></td><td><b>{{ order.total_price | money }}</b></td></tr>
+      </tfoot>
+    </table>
+
+    <div class="st-addr-cols">
+      {%- if order.shipping_address -%}
+      <div>
+        <h2 class="st-search-subhead">{{ 'customer.order.shipping_address' | t }}</h2>
+        <p>{{ order.shipping_address.name }}<br>
+        {{ order.shipping_address.address1 }}{% if order.shipping_address.address2 != blank %}<br>{{ order.shipping_address.address2 }}{% endif %}<br>
+        {{ order.shipping_address.city }}, {{ order.shipping_address.province }}, {{ order.shipping_address.zip }}<br>
+        {{ order.shipping_address.country }}</p>
+      </div>
+      {%- endif -%}
+      {%- if order.billing_address -%}
+      <div>
+        <h2 class="st-search-subhead">{{ 'customer.order.billing_address' | t }}</h2>
+        <p>{{ order.billing_address.name }}<br>
+        {{ order.billing_address.address1 }}{% if order.billing_address.address2 != blank %}<br>{{ order.billing_address.address2 }}{% endif %}<br>
+        {{ order.billing_address.city }}, {{ order.billing_address.province }}, {{ order.billing_address.zip }}<br>
+        {{ order.billing_address.country }}</p>
+      </div>
+      {%- endif -%}
+    </div>
+
+    <a class="st-sm-link" href="{{ routes.account_url }}">{{ 'customer.order.back_to_account' | t }}</a>
+  </div>
+</section>

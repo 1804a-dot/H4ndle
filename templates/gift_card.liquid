@@ -1,0 +1,44 @@
+{%- layout none -%}
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ 'gift_card.issued.title' | t }}</title>
+<meta name="robots" content="noindex, nofollow">
+{{ 'h4ndle.css' | asset_url | stylesheet_tag }}
+{{ 'h4ndle-store.css' | asset_url | stylesheet_tag }}
+{{ content_for_header }}
+</head>
+<body class="st-giftcard-body">
+{% render 'h4-icons' %}
+<main class="st-giftcard" data-tone="light">
+  <div class="wrap">
+    <div class="st-giftcard-card{% if gift_card.expired %} is-expired{% endif %}">
+      <svg class="st-giftcard-wm" viewBox="0 0 940.48 168.1" aria-label="H4NDLE" role="img"><use href="#wm"/></svg>
+      <p class="kicker" style="justify-content:center">{{ 'gift_card.issued.title' | t }}</p>
+
+      {%- if gift_card.expired -%}
+      {%- assign gc_expiry_formatted = gift_card.expires_on | date: '%d de %B de %Y' -%}
+      <p class="st-giftcard-status">{{ 'gift_card.issued.expired' | t: expiry: gc_expiry_formatted }}</p>
+      {%- elsif gift_card.enabled == false -%}
+      <p class="st-giftcard-status">{{ 'gift_card.issued.disabled' | t }}</p>
+      {%- endif -%}
+
+      <p class="st-giftcard-balance">{{ gift_card.balance | money }}</p>
+      <p class="st-giftcard-initial">de {{ gift_card.initial_value | money }} disponibles</p>
+
+      <div class="st-giftcard-code" aria-label="Código de la tarjeta de regalo">{{ gift_card.code }}</div>
+
+      {%- if gift_card.expires_on -%}
+      <p class="st-giftcard-expiry">Vence el {{ gift_card.expires_on | date: '%d de %B de %Y' }}.</p>
+      {%- endif -%}
+
+      <p class="st-giftcard-help">{{ 'gift_card.issued.subtext' | t }}</p>
+
+      <a class="btn ghost" href="{{ shop.url }}">{{ 'gift_card.issued.shop_link' | t }}</a>
+    </div>
+  </div>
+</main>
+</body>
+</html>

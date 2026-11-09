@@ -1,0 +1,176 @@
+{%- comment -%}
+  Datos estructurados JSON-LD globales de H4NDLE (un solo bloque con @graph). Se incluye en el head de layout/theme.liquid.
+  Todas las paginas: Organization (OnlineStore) y WebSite con SearchAction.
+  Solo la home: WebPage y OfferCatalog con los 8 productos del catalogo (los mismos que usa snippets/h4-catalog.liquid).
+  No emite Review, AggregateRating, FAQPage ni HowTo: esos viven en sus propias secciones.
+  Los textos de la home llegan desde el layout (h4_home_name, h4_home_desc, h4_home_image, h4_home_image_alt, h4_home_image_w, h4_home_image_h)
+  para no duplicar el title, la description ni la imagen og. Todo string dinamico va con el filtro json.
+  Precios: variant.price viene en centavos; se divide entre 100.0 para publicarlos en pesos (MXN).
+{%- endcomment -%}
+{%- liquid
+  assign h4_is_home = false
+  if template.name == 'index'
+    assign h4_is_home = true
+  endif
+  assign h4_cur = 'MXN'
+  assign h4_site = shop.url
+  assign h4_home_url = h4_site | append: '/'
+  assign h4_org_id = h4_site | append: '/#organization'
+  assign h4_site_id = h4_site | append: '/#website'
+  assign h4_logo_id = h4_site | append: '/#logo'
+  assign h4_cat_id = h4_site | append: '/#catalog'
+  assign h4_logo = 'h4ndle-logo.svg' | asset_url | prepend: 'https:'
+  assign h4_search = h4_site | append: routes.search_url | append: '?q={search_term_string}'
+  assign h4_ig = 'https://www.instagram.com/handlemx/'
+  assign h4_site_desc = h4_home_desc | default: 'Empaques personalizados con tu logo para pymes y Dark Kitchens en México.'
+  assign h4_page_name = h4_home_name | default: 'H4NDLE'
+  assign h4_img_w = h4_home_image_w | default: 1920
+  assign h4_img_h = h4_home_image_h | default: 1080
+
+  # Envio gratis y paquete de 3: solo se mencionan si la tienda los tiene activos (mismos ajustes que el carrito).
+  assign h4_ship_sentence = ''
+  assign h4_free = settings.h4_free_shipping | default: 2500 | plus: 0
+  if h4_free > 0
+    assign h4_free_k = h4_free | divided_by: 1000
+    assign h4_free_r = h4_free_k | times: 1000
+    assign h4_free_r = h4_free | minus: h4_free_r
+    if h4_free_k == 0
+      assign h4_free_txt = h4_free_r
+    elsif h4_free_r < 10
+      assign h4_free_txt = h4_free_k | append: ',00' | append: h4_free_r
+    elsif h4_free_r < 100
+      assign h4_free_txt = h4_free_k | append: ',0' | append: h4_free_r
+    else
+      assign h4_free_txt = h4_free_k | append: ',' | append: h4_free_r
+    endif
+    assign h4_ship_sentence = ' Envío gratis en compras de más de $' | append: h4_free_txt | append: ' MXN.'
+  endif
+  assign h4_bundle_sentence = ''
+  assign h4_bundle_code = settings.h4_bundle_code | default: '' | strip
+  if h4_bundle_code != blank
+    assign h4_pct = settings.h4_bundle_percent | default: 30
+    assign h4_bundle_sentence = ' ' | append: h4_pct | append: '% de descuento al combinar 3 productos distintos.'
+  endif
+  assign h4_org_desc = 'H4NDLE es la plataforma de empaque de marca para pymes y Dark Kitchens en México: empaques personalizados con tu logo, con compra y pago en línea y precio por pieza a la vista, sin cotizar. Pedidos de 50 a 5,000 piezas con 3 rangos de precio por volumen. Garantía de entrega en 4 días hábiles desde que apruebas el diseño (aprobado de lunes a viernes antes de las 2:00 p.m.) o es gratis: se devuelve el total del pedido, en Ciudad de México y área metropolitana.' | append: h4_ship_sentence | append: h4_bundle_sentence
+-%}
+<script type="application/ld+json">
+{
+"@context":"https://schema.org",
+"@graph":[
+{
+"@type":["Organization","OnlineStore"],
+"@id":{{ h4_org_id | json }},
+"name":"H4NDLE",
+"alternateName":"Handle",
+"url":{{ h4_home_url | json }},
+"logo":{"@type":"ImageObject","@id":{{ h4_logo_id | json }},"url":{{ h4_logo | json }},"contentUrl":{{ h4_logo | json }},"width":940,"height":168,"caption":"H4NDLE" },
+"description":{{ h4_org_desc | json }},
+"slogan":"Haz que se vea desde que llega.",
+"areaServed":[{"@type":"Country","name":"México"},{"@type":"City","name":"Ciudad de México"},{"@type":"AdministrativeArea","name":"Área metropolitana de la Ciudad de México"}],
+"knowsAbout":["Empaques personalizados","Empaque de marca","Empaque personalizado con logo","Empaque para Dark Kitchens","Empaque para pymes de comida","Empaque para fast food","Empaque para pizza","Empaque para sushi","Empaque para alitas","Empaque para comida healthy","Empaque para bakery y postres","Empaque para cafeterías","Empaque para comida mexicana"],
+"keywords":"empaques personalizados, empaque con tu logo, empaque de marca, cajas personalizadas, bolsas personalizadas, empaque para Dark Kitchens, empaque para negocios de comida, empaque para pymes, México",
+"sameAs":[{{ h4_ig | json }}],
+"contactPoint":[{"@type":"ContactPoint","contactType":"customer service","telephone":"+525545580107","email":"contacto@handlemx.com","areaServed":"MX","availableLanguage":"es"}]
+{%- if h4_is_home -%}
+,"hasOfferCatalog":{"@id":{{ h4_cat_id | json }} }
+{%- endif -%}
+},
+{
+"@type":"WebSite",
+"@id":{{ h4_site_id | json }},
+"url":{{ h4_home_url | json }},
+"name":"H4NDLE",
+"alternateName":"Handle",
+"description":{{ h4_site_desc | json }},
+"inLanguage":"es-MX",
+"publisher":{"@id":{{ h4_org_id | json }} },
+"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":{{ h4_search | json }} },"query-input":"required name=search_term_string" }
+}
+{%- if h4_is_home -%}
+,
+{
+"@type":"WebPage",
+"@id":{{ canonical_url | append: '#webpage' | json }},
+"url":{{ canonical_url | json }},
+"name":{{ h4_page_name | json }},
+"description":{{ h4_site_desc | json }},
+"inLanguage":"es-MX",
+"isPartOf":{"@id":{{ h4_site_id | json }} },
+"about":{"@id":{{ h4_org_id | json }} },
+"primaryImageOfPage":{"@type":"ImageObject","@id":{{ canonical_url | append: '#primaryimage' | json }},"url":{{ h4_home_image | json }},"contentUrl":{{ h4_home_image | json }},"width":{{ h4_img_w | json }},"height":{{ h4_img_h | json }},"caption":{{ h4_home_image_alt | json }} }
+},
+{
+"@type":"OfferCatalog",
+"@id":{{ h4_cat_id | json }},
+"name":"Catálogo de empaques personalizados H4NDLE",
+"description":"Todos los precios son por pieza, en pesos mexicanos, con tu marca impresa. El diseño va incluido. De 50 a 5,000 piezas por pedido, con 3 rangos de precio por volumen.",
+"url":{{ canonical_url | append: '#tienda' | json }},
+"itemListElement":[
+{%- liquid
+  assign h4_slots = 'caja-asa,caja-hamburguesa,charola-hotdog,caja-pizza,caja-sushi,caja-postres,cono-helado,bolsa-asa' | split: ','
+  assign h4_handles = 'caja-con-asa,caja-para-hamburguesa,charola-para-hotdog,caja-para-pizza,caja-para-sushi,caja-para-postres,cono-para-helado,bolsa-con-asa' | split: ','
+  assign h4_first = true
+-%}
+{%- for h4_slot in h4_slots -%}
+  {%- assign h4_key = 'h4_p_' | append: h4_slot | replace: '-', '_' -%}
+  {%- assign h4_p = settings[h4_key] -%}
+  {%- if h4_p == blank -%}
+    {%- assign h4_p = all_products[h4_handles[forloop.index0]] -%}
+  {%- endif -%}
+  {%- if h4_p != blank and h4_p.id != blank and h4_p.variants.size > 0 -%}
+    {%- liquid
+      assign h4_lo = 0
+      assign h4_hi = 0
+      for h4_v in h4_p.variants
+        if h4_lo == 0 or h4_v.price < h4_lo
+          assign h4_lo = h4_v.price
+        endif
+        if h4_v.price > h4_hi
+          assign h4_hi = h4_v.price
+        endif
+      endfor
+      assign h4_purl = h4_site | append: h4_p.url
+      assign h4_img = ''
+      if h4_p.featured_image != blank
+        assign h4_img = h4_p.featured_image | image_url: width: 1200 | replace: 'https:', '' | prepend: 'https:'
+      endif
+      assign h4_pdesc = h4_p.title | append: ' con tu marca impresa. Precio por pieza según volumen, de 50 a 5,000 piezas por pedido. Diseño incluido.'
+    -%}
+    {%- unless h4_first -%},{%- endunless -%}
+    {%- assign h4_first = false -%}
+{
+"@type":"Product",
+"@id":{{ h4_purl | append: '#product' | json }},
+"name":{{ h4_p.title | json }},
+"url":{{ h4_purl | json }}
+{%- if h4_img != blank -%}
+,"image":{{ h4_img | json }}
+{%- endif -%}
+,
+"description":{{ h4_pdesc | json }},
+"brand":{"@id":{{ h4_org_id | json }} },
+"offers":{
+"@type":"AggregateOffer",
+"priceCurrency":{{ h4_cur | json }},
+"lowPrice":{{ h4_lo | divided_by: 100.0 | json }},
+"highPrice":{{ h4_hi | divided_by: 100.0 | json }},
+"offerCount":{{ h4_p.variants | size | json }},
+"availability":{% if h4_p.available %}"https://schema.org/InStock"{% else %}"https://schema.org/OutOfStock"{% endif %},
+"description":"Precio por pieza, con tu marca impresa. El diseño va incluido.",
+"seller":{"@id":{{ h4_org_id | json }} },
+"offers":[
+{%- for h4_v in h4_p.variants -%}
+  {%- unless forloop.first -%},{%- endunless -%}
+{"@type":"Offer","name":{{ h4_v.title | json }},"price":{{ h4_v.price | divided_by: 100.0 | json }},"priceCurrency":{{ h4_cur | json }},"availability":{% if h4_v.available %}"https://schema.org/InStock"{% else %}"https://schema.org/OutOfStock"{% endif %},"url":{{ h4_purl | append: '?variant=' | append: h4_v.id | json }} }
+{%- endfor -%}
+]
+}
+}
+  {%- endif -%}
+{%- endfor -%}
+]
+}
+{%- endif -%}
+]
+}
+</script>

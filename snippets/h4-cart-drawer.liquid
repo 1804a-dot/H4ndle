@@ -1,0 +1,13 @@
+<div class="scrim-cart" id="cartScrim"></div>
+<aside class="drawer" id="cart" role="dialog" aria-modal="true" aria-labelledby="cart-t" inert>
+  <header><h2 id="cart-t">Tu carrito</h2><button class="x" id="cartClose" type="button" aria-label="Cerrar carrito"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></header>
+  <ul class="lines" id="cartLines"></ul>
+  <footer>
+    <div class="row"><span>Subtotal</span><span id="cSub">$0.00</span></div>
+    <div class="row disc" id="cDiscRow" hidden><span id="cDiscLbl">Paquete de 3 (−30%)</span><span id="cDisc">$0.00</span></div>
+    <div class="row tot"><span>Total</span><span id="cTot">$0.00</span></div>
+    <p class="ship" id="cShip">Envío gratis en compras de más de $2,500.</p>
+    <button class="btn" id="checkout" type="button">Ir a pagar</button>
+  </footer>
+</aside>
+<div class="toast" id="toast" role="status" aria-live="polite"><span id="toastMsg"></span><button type="button" id="toastBtn">Ver carrito</button></div>

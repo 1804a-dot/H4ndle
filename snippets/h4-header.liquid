@@ -1,0 +1,115 @@
+{%- if template.name == 'index' -%}
+  {%- assign h4_home = '' -%}
+  {%- assign h4_brand = '#main' -%}
+{%- else -%}
+  {%- assign h4_home = routes.root_url -%}
+  {%- assign h4_brand = routes.root_url -%}
+{%- endif -%}
+{%- comment -%} Referral link: va directo a la pagina real (/pages/referidos) para no depender de la redireccion /referidos ni de que la vista previa de un tema sin publicar se pierda al seguirla. {%- endcomment -%}
+{%- assign h4_ref = routes.root_url | append: 'pages/referidos' -%}
+{%- if page.handle == 'referidos' -%}{%- assign h4_ref_cur = ' aria-current="page"' -%}{%- else -%}{%- assign h4_ref_cur = '' -%}{%- endif -%}
+{%- comment -%} Mi cuenta: con sesion va a la cuenta de cliente (cuentas nuevas, alojadas por Shopify); sin sesion, al inicio de sesion. Ahi el cliente ve su codigo de referido y su credito en /pages/referidos. {%- endcomment -%}
+{%- if customer -%}
+  {%- assign h4_acct_url = routes.account_url -%}
+  {%- assign h4_acct_lbl = 'Mi cuenta' -%}
+{%- else -%}
+  {%- assign h4_acct_url = routes.account_login_url -%}
+  {%- assign h4_acct_lbl = 'Mi cuenta: iniciar sesión' -%}
+{%- endif -%}
+<style>
+/* H4 menu movil (.h4-mnav): hamburguesa + panel. El tono claro/oscuro lo pinta paintNav() en #nav (.light / .solid); el panel lo sigue por CSS (hermano de #nav). */
+.h4-mnav-btn{display:none;position:relative;flex:none;width:46px;height:46px;padding:0;border-radius:50%;border:1.5px solid currentColor;background:transparent;color:inherit;cursor:pointer;transition:background .3s var(--ease-out)}
+.h4-mnav-btn:hover{background:rgba(127,160,230,.18)}
+.h4-mnav-btn:focus-visible{border-radius:50%}
+.h4-mnav-btn i{position:absolute;left:50%;top:50%;width:18px;height:2px;margin:-1px 0 0 -9px;border-radius:2px;background:currentColor;transition:transform .35s var(--ease-out),opacity .2s}
+.h4-mnav-btn i:nth-child(1){transform:translateY(-6px)}
+.h4-mnav-btn i:nth-child(3){transform:translateY(6px)}
+.h4-mnav-btn[aria-expanded="true"] i:nth-child(1){transform:rotate(45deg)}
+.h4-mnav-btn[aria-expanded="true"] i:nth-child(2){opacity:0}
+.h4-mnav-btn[aria-expanded="true"] i:nth-child(3){transform:rotate(-45deg)}
+.h4-mnav-scrim{position:fixed;left:0;right:0;bottom:0;top:var(--top-h,101px);z-index:0;background:rgba(4,10,30,.5);opacity:0;visibility:hidden;transition:opacity .28s var(--ease-out),visibility 0s linear .28s}
+.h4-mnav-scrim.on{opacity:1;visibility:visible;transition-delay:0s}
+.h4-mnav{--mn-bg:rgba(8,26,69,.97);--mn-fg:var(--paper);--mn-line:var(--line-dark);--mn-hi:#8CC4FF;position:absolute;left:0;right:0;top:100%;z-index:2;max-height:calc(100vh - var(--top-h,101px));max-height:calc(100dvh - var(--top-h,101px));overflow-y:auto;overscroll-behavior:contain;background:var(--mn-bg);color:var(--mn-fg);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-top:1px solid var(--mn-line);box-shadow:0 28px 50px -30px rgba(4,10,30,.7);visibility:hidden;opacity:0;transform:translateY(-8px);pointer-events:none;transition:opacity .28s var(--ease-out),transform .28s var(--ease-out),visibility 0s linear .28s}
+.nav.light ~ .h4-mnav{--mn-bg:rgba(241,244,250,.98);--mn-fg:var(--ink);--mn-line:var(--line);--mn-hi:var(--accent)}
+.h4-mnav.on{visibility:visible;opacity:1;transform:none;pointer-events:auto;transition-delay:0s}
+.topbar[data-mnav="open"] .nav:not(.light):not(.solid){background:rgba(8,26,69,.97);box-shadow:0 1px 0 var(--line-dark)}
+.h4-mnav-in{width:min(100% - 2*var(--gutter),var(--maxw));margin-inline:auto;padding:6px 0 24px}
+.h4-mnav-list{list-style:none;margin:0;padding:0}
+.h4-mnav-list li+li{border-top:1px solid var(--mn-line)}
+.h4-mnav-list a{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:56px;color:inherit;text-decoration:none;font-size:1.06rem;font-weight:600}
+.h4-mnav-list a::after{content:"";flex:none;width:8px;height:8px;border-top:2px solid currentColor;border-right:2px solid currentColor;transform:rotate(45deg);opacity:.45;transition:transform .3s var(--ease-out),opacity .3s}
+.h4-mnav-list a:hover::after{opacity:.9;transform:translateX(3px) rotate(45deg)}
+.h4-mnav-list a[aria-current="page"]{color:var(--mn-hi)}
+.h4-mnav-list a:focus-visible{outline:3px solid var(--mn-hi);outline-offset:-3px;border-radius:10px}
+.h4-mnav .btn{width:100%;margin-top:18px}
+.h4-mnav .btn:focus-visible{outline-color:var(--mn-hi)}
+/* H4 cuenta (.h4-acct): mismo circulo que .cart-btn, junto al carrito. Punto verde = sesion iniciada. */
+.h4-acct{position:relative;flex:none;display:inline-flex;align-items:center;justify-content:center;width:46px;height:46px;border-radius:50%;border:1.5px solid currentColor;background:transparent;color:inherit;text-decoration:none;transition:background .3s var(--ease-out)}
+.h4-acct:hover{background:rgba(127,160,230,.18)}
+.h4-acct:focus-visible{border-radius:50%}
+.h4-acct svg{width:20px;height:20px}
+.h4-acct .on{position:absolute;top:-1px;right:-1px;width:12px;height:12px;border-radius:50%;background:#2BB673;box-shadow:0 0 0 2px var(--canvas)}
+.topbar .nav .links a[aria-current="page"]{opacity:1}
+@media (max-width:1100px){.topbar .nav .links{display:none}.topbar .nav .act{margin-left:auto}.h4-mnav-btn{display:inline-flex}}
+@media (min-width:1101px){.topbar .nav .links a{white-space:nowrap}.h4-mnav,.h4-mnav-scrim{display:none}}
+@media (max-width:360px){.h4-acct{display:none}}
+@media (prefers-reduced-motion:reduce){.h4-mnav,.h4-mnav-scrim,.h4-mnav-btn,.h4-mnav-btn i,.h4-mnav-list a::after,.h4-acct{transition:none!important}.h4-mnav{transform:none}}
+</style>
+<header class="topbar" id="topbar">
+<div class="announce"><b>Recibe tus empaques en 4 días o son gratis.*</b><span class="dot" aria-hidden="true">·</span>Envío gratis en compras de más de $2,500</div>
+
+<nav class="nav" id="nav" aria-label="Principal">
+  <a class="brand" href="{{ h4_brand }}" aria-label="H4NDLE, inicio"><svg viewBox="0 0 940.48 168.1" aria-hidden="true"><use href="#wm"/></svg></a>
+  <ul class="links">
+    <li><a href="{{ h4_home }}#sistema">Cómo funciona</a></li>
+    <li><a href="{{ h4_home }}#cocinas">Industrias</a></li>
+    <li><a href="{{ h4_home }}#garantia">Garantía</a></li>
+    <li><a href="{{ h4_home }}#preguntas">Preguntas</a></li>
+    <li><a href="{{ h4_ref }}"{{ h4_ref_cur }}>Referral link</a></li>
+  </ul>
+  <div class="act">
+    <a class="btn sm" href="{{ h4_home }}#tienda">Ve tu precio</a>
+    <a class="h4-acct" href="{{ h4_acct_url }}" rel="nofollow" aria-label="{{ h4_acct_lbl }}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.6" r="3.7" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4.8 19.6c1.3-3.4 4-5.2 7.2-5.2s5.9 1.8 7.2 5.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>{% if customer %}<span class="on" aria-hidden="true"></span>{% endif %}</a>
+    <button class="cart-btn" id="cartOpen" type="button" aria-label="Abrir carrito, 0 productos" aria-haspopup="dialog" aria-controls="cart"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8h12l-1 12H7L6 8Z M9 8V6a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span class="n" id="cartCount">0</span></button>
+    <button class="h4-mnav-btn" id="h4MnavBtn" type="button" aria-label="Menú" aria-expanded="false" aria-controls="h4Mnav"><i></i><i></i><i></i></button>
+  </div>
+</nav>
+<div class="h4-mnav-scrim" id="h4MnavScrim" aria-hidden="true"></div>
+<nav class="h4-mnav" id="h4Mnav" aria-label="Menú">
+  <div class="h4-mnav-in">
+    <ul class="h4-mnav-list">
+      <li><a href="{{ h4_home }}#sistema">Cómo funciona</a></li>
+      <li><a href="{{ h4_home }}#cocinas">Industrias</a></li>
+      <li><a href="{{ h4_home }}#garantia">Garantía</a></li>
+      <li><a href="{{ h4_home }}#preguntas">Preguntas</a></li>
+      <li><a href="{{ h4_ref }}"{{ h4_ref_cur }}>Referral link</a></li>
+      <li><a href="{{ h4_acct_url }}" rel="nofollow">Mi cuenta</a></li>
+    </ul>
+    <a class="btn" href="{{ h4_home }}#tienda">Ve tu precio</a>
+  </div>
+</nav>
+</header>
+<script>
+(()=>{
+const bar=document.getElementById('topbar'),btn=document.getElementById('h4MnavBtn'),panel=document.getElementById('h4Mnav'),scrim=document.getElementById('h4MnavScrim');
+if(!bar||!btn||!panel)return;
+const desk=matchMedia('(min-width:1101px)');
+const isOpen=()=>btn.getAttribute('aria-expanded')==='true';
+function setOpen(open,back){
+  open=!!open&&!desk.matches;
+  btn.setAttribute('aria-expanded',open?'true':'false');
+  panel.classList.toggle('on',open);
+  if(scrim)scrim.classList.toggle('on',open);
+  if(open)bar.setAttribute('data-mnav','open');else bar.removeAttribute('data-mnav');
+  if(!open&&back)btn.focus();
+}
+btn.addEventListener('click',()=>setOpen(!isOpen()));
+panel.addEventListener('click',e=>{if(e.target.closest('a'))setOpen(false)});
+document.addEventListener('click',e=>{if(isOpen()&&!panel.contains(e.target)&&!btn.contains(e.target))setOpen(false)});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&isOpen())setOpen(false,true)});
+bar.addEventListener('focusout',e=>{const t=e.relatedTarget;if(isOpen()&&t&&!panel.contains(t)&&!btn.contains(t))setOpen(false)});
+const onDesk=e=>{if(e.matches)setOpen(false)};
+if(desk.addEventListener)desk.addEventListener('change',onDesk);else if(desk.addListener)desk.addListener(onDesk);
+addEventListener('pageshow',e=>{if(e.persisted)setOpen(false)});
+})();
+</script>

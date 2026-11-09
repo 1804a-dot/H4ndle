@@ -1,0 +1,89 @@
+{%- comment -%} H4 · Mi cuenta (historial de pedidos). Solo se usa con cuentas de cliente clásicas; con las cuentas nuevas la página la aloja Shopify y el código de referido se ve en /pages/referidos. {%- endcomment -%}
+<section class="st-section" data-tone="light" aria-labelledby="st-account-title">
+  <div class="wrap">
+    <div class="st-account-head">
+      <div>
+        <p class="kicker"><svg aria-hidden="true"><use href="#four"/></svg>Mi cuenta</p>
+        <h1 class="display h2" id="st-account-title">{{ 'customer.account.title' | t }}</h1>
+        {%- if customer.name != blank -%}<p class="lede">{{ customer.name }} · {{ customer.email }}</p>{%- endif -%}
+      </div>
+      <div class="st-actions-row">
+        <a class="btn ghost sm" href="{{ routes.account_addresses_url }}">{{ 'customer.account.view_addresses' | t }}</a>
+        <a class="btn sm" href="{{ routes.account_logout_url }}">{{ 'customer.account.log_out' | t }}</a>
+      </div>
+    </div>
+
+    <h2 class="st-search-subhead">{{ 'customer.orders.title' | t }}</h2>
+    {%- paginate customer.orders by 20 -%}
+      {%- if customer.orders.size == 0 -%}
+      <p class="st-empty-note">{{ 'customer.orders.none' | t }}</p>
+      {%- else -%}
+      <table class="st-table">
+        <thead>
+          <tr>
+            <th>{{ 'customer.orders.order_number' | t }}</th>
+            <th>{{ 'customer.orders.date' | t }}</th>
+            <th>{{ 'customer.orders.payment_status' | t }}</th>
+            <th>{{ 'customer.orders.fulfillment_status' | t }}</th>
+            <th>{{ 'customer.orders.total' | t }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {%- for order in customer.orders -%}
+          <tr>
+            <td><a href="{{ order.customer_url }}">{{ order.name }}</a></td>
+            <td>{{ order.created_at | date: '%d/%m/%Y' }}</td>
+            <td>{{ order.financial_status_label }}</td>
+            <td>{{ order.fulfillment_status_label }}</td>
+            <td>{{ order.total_price | money }}</td>
+          </tr>
+          {%- endfor -%}
+        </tbody>
+      </table>
+
+      {%- if paginate.pages > 1 -%}
+      <nav class="st-pagination" aria-label="Paginación">
+        {%- if paginate.previous -%}
+        <a href="{{ paginate.previous.url }}">{{ 'general.pagination.previous' | t }}</a>
+        {%- else -%}
+        <span aria-disabled="true">{{ 'general.pagination.previous' | t }}</span>
+        {%- endif -%}
+        {%- if paginate.next -%}
+        <a href="{{ paginate.next.url }}">{{ 'general.pagination.next' | t }}</a>
+        {%- else -%}
+        <span aria-disabled="true">{{ 'general.pagination.next' | t }}</span>
+        {%- endif -%}
+      </nav>
+      {%- endif -%}
+      {%- endif -%}
+    {%- endpaginate -%}
+
+    <hr class="st-divider">
+    {%- liquid
+      assign h4_ref_code = customer.metafields.h4ndle.codigo_referido.value | strip
+      assign h4_ref_url = routes.root_url | append: '/pages/referidos' | replace: '//', '/'
+    -%}
+    <h2 class="st-search-subhead">Referidos</h2>
+    <div class="st-addr-card">
+      {%- if h4_ref_code != blank %}
+      <p>Tu código: <b>{{ h4_ref_code | escape }}</b></p>
+      {%- else %}
+      <p>Tu código de referido llega con tu primer pedido entregado.</p>
+      {%- endif %}
+      <p><a href="{{ h4_ref_url }}">Ver mi código, mi link y mi bono</a></p>
+    </div>
+
+    <hr class="st-divider">
+    <h2 class="st-search-subhead">{{ 'customer.addresses.default' | t }}</h2>
+    {%- if customer.default_address -%}
+    <div class="st-addr-card is-default">
+      <span class="st-badge">{{ 'customer.addresses.default' | t }}</span>
+      <p>{{ customer.default_address.name }}</p>
+      <p>{{ customer.default_address.address1 }}{% if customer.default_address.address2 != blank %}, {{ customer.default_address.address2 }}{% endif %}</p>
+      <p>{{ customer.default_address.city }}, {{ customer.default_address.province }}, {{ customer.default_address.zip }}</p>
+      <p>{{ customer.default_address.country }}</p>
+    </div>
+    {%- endif -%}
+    <p class="st-note"><a href="{{ routes.account_addresses_url }}">{{ 'customer.account.view_addresses' | t }}</a></p>
+  </div>
+</section>

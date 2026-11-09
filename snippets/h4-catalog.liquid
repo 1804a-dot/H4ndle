@@ -1,0 +1,38 @@
+{%- comment -%}
+  Live catalog for assets/h4ndle.js and assets/h4ndle-landing.js (contract in SPEC-SHOPIFY.md).
+  Each slot uses the product picked in Theme settings > Catálogo H4NDLE, or the default handle.
+  Money values are in cents.
+{%- endcomment -%}
+{%- liquid
+  assign h4_slots = 'caja-asa,caja-hamburguesa,charola-hotdog,caja-pizza,caja-sushi,caja-postres,cono-helado,bolsa-asa' | split: ','
+  assign h4_handles = 'caja-con-asa,caja-para-hamburguesa,charola-para-hotdog,caja-para-pizza,caja-para-sushi,caja-para-postres,cono-para-helado,bolsa-con-asa' | split: ','
+  assign h4_code = settings.h4_bundle_code | default: '' | strip
+  assign h4_pct = settings.h4_bundle_percent | default: 30
+  assign h4_free = settings.h4_free_shipping | default: 2500 | times: 100 | round
+  assign h4_first = true
+-%}
+{"currency":{{ cart.currency.iso_code | default: shop.currency | json }},"routes":{"root":{{ routes.root_url | json }},"cart":{{ routes.cart_url | json }},"cartAdd":{{ routes.cart_add_url | json }},"cartChange":{{ routes.cart_change_url | json }},"cartUpdate":{{ routes.cart_update_url | json }} },"bundleCode":{{ h4_code | json }},"bundlePercent":{{ h4_pct | json }},"bundleMin":3,"freeShipping":{{ h4_free | json }},"fallbackImages":{
+{%- for h4_slot in h4_slots -%}
+  {%- assign h4_img = 'p-' | append: h4_slot | append: '.jpg' -%}
+  {%- unless forloop.first -%},{%- endunless -%}
+  {{ h4_slot | json }}:{{ h4_img | asset_url | json }}
+{%- endfor -%}
+},"products":{
+{%- for h4_slot in h4_slots -%}
+  {%- assign h4_key = 'h4_p_' | append: h4_slot | replace: '-', '_' -%}
+  {%- assign h4_p = settings[h4_key] -%}
+  {%- if h4_p == blank -%}
+    {%- assign h4_p = all_products[h4_handles[forloop.index0]] -%}
+  {%- endif -%}
+  {%- if h4_p != blank and h4_p.id != blank -%}
+    {%- unless h4_first -%},{%- endunless -%}
+    {%- assign h4_first = false -%}
+    {{ h4_slot | json }}:{"productId":{{ h4_p.id }},"handle":{{ h4_p.handle | json }},"title":{{ h4_p.title | json }},"url":{{ h4_p.url | json }},"image":{% if h4_p.featured_image %}{{ h4_p.featured_image | image_url: width: 900 | json }}{% else %}null{% endif %},"available":{{ h4_p.available | json }},"variants":[
+    {%- for h4_v in h4_p.variants -%}
+      {%- unless forloop.first -%},{%- endunless -%}
+      {"id":{{ h4_v.id }},"price":{{ h4_v.price }},"available":{{ h4_v.available | json }},"title":{{ h4_v.title | json }} }
+    {%- endfor -%}
+    ]}
+  {%- endif -%}
+{%- endfor -%}
+}}
