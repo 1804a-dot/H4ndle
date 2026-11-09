@@ -1,0 +1,161 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "H4NDLE",
+    "theme_version": "1.0.0",
+    "theme_author": "H4NDLE",
+    "theme_documentation_url": "https://www.instagram.com/handlemx/",
+    "theme_support_url": "https://www.instagram.com/handlemx/"
+  },
+  {
+    "name": "Catálogo H4NDLE",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Productos del catálogo"
+      },
+      {
+        "type": "paragraph",
+        "content": "Asigna el producto de Shopify que corresponde a cada empaque de la tienda y del configurador. Si dejas uno en blanco, se usa el producto con el handle indicado."
+      },
+      {
+        "type": "product",
+        "id": "h4_p_caja_asa",
+        "label": "Caja con asa",
+        "info": "Producto por defecto: caja-con-asa"
+      },
+      {
+        "type": "product",
+        "id": "h4_p_caja_hamburguesa",
+        "label": "Caja para hamburguesa",
+        "info": "Producto por defecto: caja-para-hamburguesa"
+      },
+      {
+        "type": "product",
+        "id": "h4_p_charola_hotdog",
+        "label": "Charola para hot dog",
+        "info": "Producto por defecto: charola-para-hotdog"
+      },
+      {
+        "type": "product",
+        "id": "h4_p_caja_pizza",
+        "label": "Caja para pizza",
+        "info": "Producto por defecto: caja-para-pizza"
+      },
+      {
+        "type": "product",
+        "id": "h4_p_caja_sushi",
+        "label": "Caja para sushi",
+        "info": "Producto por defecto: caja-para-sushi"
+      },
+      {
+        "type": "product",
+        "id": "h4_p_caja_postres",
+        "label": "Caja para postres",
+        "info": "Producto por defecto: caja-para-postres"
+      },
+      {
+        "type": "product",
+        "id": "h4_p_cono_helado",
+        "label": "Cono para helado",
+        "info": "Producto por defecto: cono-para-helado"
+      },
+      {
+        "type": "product",
+        "id": "h4_p_bolsa_asa",
+        "label": "Bolsa con asa",
+        "info": "Producto por defecto: bolsa-con-asa"
+      },
+      {
+        "type": "header",
+        "content": "Paquete de 3 y envíos"
+      },
+      {
+        "type": "text",
+        "id": "h4_bundle_code",
+        "label": "Código de descuento del paquete de 3",
+        "default": "PAQUETE3",
+        "info": "Código de Shopify que se aplica solo al carrito. Déjalo vacío para desactivar el paquete de 3."
+      },
+      {
+        "type": "number",
+        "id": "h4_bundle_percent",
+        "label": "Descuento del paquete de 3 (%)",
+        "default": 30
+      },
+      {
+        "type": "number",
+        "id": "h4_free_shipping",
+        "label": "Envío gratis a partir de (MXN)",
+        "default": 2500
+      }
+    ]
+  },
+  {
+    "name": "Contacto y redes",
+    "settings": [
+      {
+        "type": "header",
+        "content": "WhatsApp"
+      },
+      {
+        "type": "text",
+        "id": "h4_whatsapp_number",
+        "label": "Número de WhatsApp",
+        "default": "525545580107",
+        "info": "Solo dígitos con lada de país, por ejemplo 52 + 10 dígitos (sin espacios, guiones ni signo +)."
+      },
+      {
+        "type": "text",
+        "id": "h4_whatsapp_message",
+        "label": "Mensaje inicial de WhatsApp",
+        "default": "Hola, quiero información sobre empaques con mi marca.",
+        "info": "Texto que aparece escrito al abrir el chat desde el botón flotante y desde el pie de página."
+      },
+      {
+        "type": "header",
+        "content": "Redes sociales"
+      },
+      {
+        "type": "paragraph",
+        "content": "Los íconos de redes siempre aparecen en el pie de página. Si una red tiene URL, el ícono es un enlace; si la dejas vacía, se muestra sin enlace. WhatsApp usa el número de arriba."
+      },
+      {
+        "type": "url",
+        "id": "h4_social_instagram",
+        "label": "Instagram",
+        "info": "Si la dejas vacía se usa https://www.instagram.com/handlemx/"
+      },
+      {
+        "type": "url",
+        "id": "h4_social_facebook",
+        "label": "Facebook"
+      },
+      {
+        "type": "url",
+        "id": "h4_social_tiktok",
+        "label": "TikTok"
+      },
+      {
+        "type": "url",
+        "id": "h4_social_youtube",
+        "label": "YouTube"
+      },
+      {
+        "type": "url",
+        "id": "h4_social_linkedin",
+        "label": "LinkedIn"
+      },
+      {
+        "type": "url",
+        "id": "h4_social_x",
+        "label": "X (Twitter)"
+      },
+      {
+        "type": "url",
+        "id": "h4_social_pinterest",
+        "label": "Pinterest"
+      }
+    ]
+  }
+]

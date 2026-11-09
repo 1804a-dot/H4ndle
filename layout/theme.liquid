@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script data-h4-scroll>
+/* Al recargar, la página empieza arriba (antes el navegador devolvía el scroll a medio camino y caía en mitad de las secciones fijadas). Si la URL trae un #ancla, se respeta. Va antes del CSS y de los scripts de la historia. */
+(function(){try{if('scrollRestoration' in history)history.scrollRestoration='manual'}catch(e){}try{if(!location.hash)window.scrollTo({top:0,left:0,behavior:'instant'})}catch(e){}})();
+</script>
+{%- comment -%}
+  SEO / GEO / AEO del head. Textos de la home (title <= 60, description <= 155 caracteres) y robots por plantilla.
+  El JSON-LD global vive en snippets/h4-schema.liquid (no duplicar Organization/WebSite en otros archivos).
+{%- endcomment -%}
+{%- liquid
+  assign h4_desc = 'Crea y compra el sistema de empaque de tu marca en un solo lugar. Diseño, personalización y producción para pymes y Dark Kitchens, con precios claros y entrega en 4 días o es gratis.'
+  assign h4_home_title = 'Empaques personalizados con tu logo para pymes · H4NDLE'
+  assign h4_home_desc = 'Compra empaques personalizados con tu logo para pymes y Dark Kitchens desde 50 piezas. Precio en línea y entrega en 4 días hábiles o es gratis en CDMX.'
+  assign h4_og_img = 'hero-ending.jpg' | asset_url | prepend: 'https:'
+  assign h4_og_alt = 'Caja con asa azul con patrón de marca e ícono de hamburguesa sobre fondo azul, ejemplo de empaque personalizado de H4NDLE'
+  if template.name == 'index'
+    assign h4_meta_desc = h4_home_desc
+    assign h4_og_title = 'H4NDLE · Tu comida ya tiene calidad. Haz que se vea desde que llega.'
+    assign h4_og_desc = 'Empaques personalizados con tu logo para pymes y Dark Kitchens. Precio en línea, desde 50 piezas y entrega en 4 días o es gratis en CDMX.'
+  else
+    assign h4_meta_desc = page_description | default: h4_desc
+    assign h4_og_title = page_title | append: ' · H4NDLE'
+    assign h4_og_desc = h4_meta_desc
+  endif
+  assign h4_robots = 'index,follow,max-image-preview:large'
+  assign h4_indexable = true
+  case template.name
+    when 'search', '404'
+      assign h4_robots = 'noindex,follow'
+      assign h4_indexable = false
+    when 'cart', 'password', 'gift_card', 'customers/account', 'customers/activate_account', 'customers/addresses', 'customers/login', 'customers/order', 'customers/register', 'customers/reset_password'
+      assign h4_robots = 'noindex,nofollow'
+      assign h4_indexable = false
+  endcase
+-%}
+{%- if template.name == 'index' %}
+<title>{{ h4_home_title | escape }}</title>
+{%- else %}
+<title>{{ page_title }}{%- if current_page > 1 %} · Página {{ current_page }}{%- endif %} · H4NDLE</title>
+{%- endif %}
+<meta name="description" content="{{ h4_meta_desc | escape }}">
+<meta name="robots" content="{{ h4_robots }}">
+<meta name="theme-color" content="#081A45">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-20 -10 304 300'%3E%3Crect x='-20' y='-10' width='304' height='300' rx='60' fill='%23134BA5'/%3E%3Cpath fill='%23ffffff' d='M185.25 185.57C185.25 192.67 180.68 198.4 175.07 198.34C160.02 198.19 131.48 198.36 111.51 198.52C102.58 198.59 97.54 185.61 103.02 176.69L153.13 95.06C163.62 77.98 185.25 87.36 185.25 108.99L185.25 185.57M264.45 13.78C264.45 6.17 258.28 0 250.67 0L150.22 0C145.67 0 141.42 2.25 138.85 6L8.84 196.22C0 209.16 9.27 226.72 24.94 226.72L138.04 226.72C147.47 226.72 155.55 233.47 157.23 242.75L161.02 263.73C162.71 273.08 170.86 279.85 180.35 279.77C199.55 279.6 231.07 279.37 249.58 279.47C257.79 279.52 264.45 272.88 264.45 264.67L264.45 13.78' fill-rule='evenodd'/%3E%3C/svg%3E">
+<link rel="canonical" href="{{ canonical_url }}">
+{%- if h4_indexable %}
+<link rel="alternate" hreflang="es-MX" href="{{ canonical_url }}">
+<link rel="alternate" hreflang="x-default" href="{{ canonical_url }}">
+{%- endif %}
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="H4NDLE">
+<meta property="og:locale" content="es_MX">
+<meta property="og:title" content="{{ h4_og_title | escape }}">
+<meta property="og:description" content="{{ h4_og_desc | escape }}">
+<meta property="og:url" content="{{ canonical_url }}">
+<meta property="og:image" content="{{ h4_og_img }}">
+<meta property="og:image:secure_url" content="{{ h4_og_img }}">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1920">
+<meta property="og:image:height" content="1080">
+<meta property="og:image:alt" content="{{ h4_og_alt | escape }}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ h4_og_title | escape }}">
+<meta name="twitter:description" content="{{ h4_og_desc | escape }}">
+<meta name="twitter:image" content="{{ h4_og_img }}">
+<meta name="twitter:image:alt" content="{{ h4_og_alt | escape }}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+{%- comment -%} Core Web Vitals: la fuente del cuerpo (Open Sauce One 400) se declara en h4ndle.css y el navegador solo la descubre al bajar y leer ese CSS. El preload (misma URL que el @font-face, ya con font-display: swap) corta esa cadena y reduce el cambio de fuente y el CLS. {%- endcomment %}
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fontsource/open-sauce-one/files/open-sauce-one-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@125,700;125,800&family=Martian+Mono:wght@400;500&display=swap">
+{{ 'h4ndle.css' | asset_url | stylesheet_tag }}
+{%- unless template.name == 'index' %}
+{{ 'h4ndle-store.css' | asset_url | stylesheet_tag }}
+{%- endunless %}
+<noscript><style>.scrub{display:none!important}.scrub-static{display:flex!important}.rv,[data-stagger]>*{opacity:1!important;transform:none!important}.pin{height:auto!important}.pin>.stage{position:relative;height:auto;padding:100px 0}.m-row .yes{opacity:1}.sys .st{position:relative;opacity:1;transform:none}.kitchens{height:auto}.kitchens .stage{position:static;height:auto}.kitchens .track{overflow-x:auto}.four .fillwrap{clip-path:none}</style></noscript>
+{% render 'h4-schema', h4_home_name: h4_home_title, h4_home_desc: h4_home_desc, h4_home_image: h4_og_img, h4_home_image_alt: h4_og_alt, h4_home_image_w: 1920, h4_home_image_h: 1080 %}
+{{ content_for_header }}
+</head>
+<body class="tpl-{{ template.name }}">
+{% render 'h4-icons' %}
+
+<a class="skip" href="#main">Saltar al contenido</a>
+<div class="env" aria-hidden="true"><i></i><i></i></div>
+
+{% render 'h4-header' %}
+
+<main id="main" tabindex="-1">
+{{ content_for_layout }}
+</main>
+
+{% render 'h4-footer' %}
+
+{% render 'h4-whatsapp' %}
+
+{% render 'h4-cart-drawer' %}
+
+<script type="application/json" id="h4-catalog">{% render 'h4-catalog' %}</script>
+<script>if(!location.hash){try{window.scrollTo({top:0,left:0,behavior:'instant'})}catch(e){window.scrollTo(0,0)}}</script>
+<script src="{{ 'h4ndle.js' | asset_url }}" defer></script>
+{%- if template.name == 'index' %}
+<script src="{{ 'patterns.js' | asset_url }}" defer></script>
+<script src="{{ 'shapes-a.js' | asset_url }}" defer></script>
+<script src="{{ 'shapes-b.js' | asset_url }}" defer></script>
+<script src="{{ 'h4ndle-landing.js' | asset_url }}" defer></script>
+{%- elsif template.name == 'product' %}
+<script src="{{ 'h4ndle-product.js' | asset_url }}" defer></script>
+{%- endif %}
+</body>
+</html>

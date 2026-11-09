@@ -1,0 +1,27 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "current": {
+    "h4_p_caja_asa": "caja-con-asa",
+    "h4_p_caja_hamburguesa": "caja-para-hamburguesa",
+    "h4_p_charola_hotdog": "charola-para-hotdog",
+    "h4_p_caja_pizza": "caja-para-pizza",
+    "h4_p_caja_sushi": "caja-para-sushi",
+    "h4_p_caja_postres": "caja-para-postres",
+    "h4_p_cono_helado": "cono-para-helado",
+    "h4_p_bolsa_asa": "bolsa-con-asa",
+    "h4_bundle_code": "PAQUETE3",
+    "h4_bundle_percent": 30,
+    "h4_free_shipping": 2500,
+    "h4_whatsapp_number": "525545580107",
+    "h4_whatsapp_message": "Hola, quiero información sobre empaques con mi marca.",
+    "h4_social_instagram": "https://www.instagram.com/handlemx/"
+  }
+}
