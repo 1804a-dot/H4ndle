@@ -1,0 +1,100 @@
+<!-- ============ FAQ ============ -->
+{%- comment -%}
+  Fuente unica de las preguntas frecuentes (AEO/GEO).
+  Cada pregunta va en una linea con el formato  Pregunta^^^Respuesta  y se separan entre si con una linea ~~~
+  El mismo texto pinta el HTML visible y el JSON-LD FAQPage (mas abajo), asi que siempre coinciden.
+  Reglas del texto: sin comillas dobles, sin el signo ampersand, sin ^^^ ni ~~~ dentro de una pregunta o respuesta.
+  Si una respuesta lleva HTML (enlaces, negritas), se conserva en lo visible y se quita en el JSON-LD.
+{%- endcomment -%}
+{%- capture h4_faq_raw -%}
+¿Necesito tener mi diseño listo?^^^No. Elige un diseño listo y compra al instante, o cuéntanos cómo lo quieres y lo hacemos nosotros. El diseño va incluido.
+~~~
+¿Cuál es el pedido mínimo?^^^50 piezas, y hasta 5,000 por pedido.
+~~~
+¿Cuánto tarda en llegar?^^^4 días hábiles en CDMX y área metropolitana. 7 días naturales al resto del país.
+~~~
+¿Qué pasa si no llega a tiempo?^^^Te devolvemos el total de tu pedido.
+~~~
+¿Y si no me gusta el diseño?^^^Nada se imprime hasta que lo apruebas.
+~~~
+¿Qué pasa después de pagar?^^^Si elegiste un diseño listo, empezamos a producir. Si es personalizado, te mandamos la propuesta por WhatsApp y correo en menos de 24 horas, la apruebas y empiezan tus 4 días. Te avisamos en cada paso.
+~~~
+¿En qué zonas aplica la garantía de entrega en 4 días?^^^La garantía aplica en Ciudad de México y área metropolitana, con todo el catálogo y en pedidos de 50 a 5,000 piezas. Para que cuente, tu diseño debe aprobarse de lunes a viernes antes de las 2:00 p.m., y los 4 días hábiles se cuentan desde que lo apruebas. Si tu pedido no llega a tiempo, te devolvemos el total.
+~~~
+¿Puedo ver el precio antes de comprar?^^^Sí. Cada empaque muestra su precio por pieza según la cantidad. No hay cotizaciones.
+~~~
+¿Cuánto cuesta un empaque personalizado con mi logo?^^^Con 50 piezas, los empaques personalizados cuestan desde $4.90 por pieza (cono para helado) hasta $18.90 (caja para pizza), con tu marca impresa y el diseño incluido. Por ejemplo, la caja para hamburguesa cuesta $9.90 por pieza y la caja para sushi $12.90. Entre más piezas pides, menos pagas por pieza: hay tres rangos de precio, de 50 a 249, de 250 a 999 y de 1,000 a 5,000 piezas.
+~~~
+¿Hay descuento si compro varios empaques distintos?^^^Sí, ahorras 30% cuando combinas 3 empaques distintos en tu pedido. Agrega 3 productos distintos a tu carrito y el descuento se aplica solo.
+~~~
+¿Qué tipos de empaque puedo personalizar con mi logo?^^^Puedes personalizar 8 empaques con tu marca: caja con asa, caja para hamburguesa, charola para hot dog, caja para pizza, caja para sushi, caja para postres, cono para helado y bolsa con asa. Están pensados para pymes y Dark Kitchens que venden comida rápida, pizza, sushi y postres.
+~~~
+¿Envían a toda la república mexicana?^^^Sí, enviamos a todo México. La garantía de 4 días hábiles aplica en Ciudad de México y área metropolitana.
+~~~
+¿El envío es gratis?^^^Sí, el envío es gratis en compras de más de $2,500 MXN. Tu carrito te muestra cuánto te falta para alcanzar ese monto.
+{%- endcapture -%}
+{%- assign h4_faq_items = h4_faq_raw | split: '~~~' -%}
+{%- assign h4_wa_num = settings.h4_whatsapp_number | default: '525545580107' | remove: ' ' | remove: '+' | remove: '-' -%}
+{%- assign h4_wa_msg = settings.h4_whatsapp_message | default: 'Hola, quiero información sobre empaques con mi marca.' -%}
+<style>
+#preguntas .fq-contact{margin-top:24px;display:flex;flex-direction:column;align-items:flex-start;gap:14px;max-width:100%}
+#preguntas .fq-contact .btn{max-width:100%;white-space:normal;text-align:center;line-height:1.25;padding-top:.6em;padding-bottom:.6em}
+#preguntas .fq-contact .btn svg{width:22px;height:22px;flex:none}
+#preguntas .fq-contact .btn:hover svg{transform:none}
+@media (max-width:860px){#preguntas .fq-contact{align-items:stretch}}
+@media (prefers-reduced-motion:reduce){#preguntas .fq-contact .btn,#preguntas .fq-contact .btn:hover{transition:none;transform:none}}
+</style>
+<section class="faq" id="preguntas" data-tone="light" aria-labelledby="fq-t">
+  <div class="wrap grid">
+    <div class="rv">
+      <p class="kicker"><svg aria-hidden="true"><use href="#four"/></svg>Preguntas frecuentes</p>
+      <h2 class="display h2" id="fq-t">Sin sorpresas ni zonas grises.</h2>
+      <p class="lede">¿Otra duda? Escríbele a una persona real.</p>
+      <div class="fq-contact">
+        <a class="btn" href="https://wa.me/{{ h4_wa_num }}?text={{ h4_wa_msg | url_encode | replace: '+', '%20' }}" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp (se abre en una pestaña nueva)"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>WhatsApp</a>
+      </div>
+    </div>
+    <div class="rv">
+      {%- for h4_item in h4_faq_items %}
+      {%- assign h4_qa = h4_item | split: '^^^' %}
+      <details><summary>{{ h4_qa.first | strip }}<i aria-hidden="true"></i></summary><p>{{ h4_qa.last | strip }}</p></details>
+      {%- endfor %}
+    </div>
+  </div>
+</section>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "@id": {{ canonical_url | append: '#faq' | json }},
+  "url": {{ canonical_url | append: '#preguntas' | json }},
+  "name": "Preguntas frecuentes sobre empaques personalizados de H4NDLE",
+  "inLanguage": "es-MX",
+  "mainEntity": [
+  {%- for h4_item in h4_faq_items %}
+  {%- assign h4_qa = h4_item | split: '^^^' %}
+    {
+      "@type": "Question",
+      "name": {{ h4_qa.first | strip_html | strip | json }},
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": {{ h4_qa.last | strip_html | strip | json }}
+      }
+    }{% unless forloop.last %},{% endunless %}
+  {%- endfor %}
+  ]
+}
+</script>
+
+{% schema %}
+{
+  "name": "H4 · Preguntas",
+  "settings": [],
+  "enabled_on": {
+    "templates": [
+      "index"
+    ]
+  }
+}
+{% endschema %}

@@ -1,0 +1,48 @@
+<!-- ============ DE EMPAQUE A VENTAS ============ -->
+<style>
+/* H4 · Empaque a ventas — reutiliza .transform/.chain de h4ndle.css; aquí solo el espaciado propio (prefijo #ventas) */
+#ventas{padding:clamp(72px,9vw,128px) 0}
+#ventas .chain{margin-top:0}
+#ventas .chain h2{margin:0 0 30px;max-width:20ch}
+/* Pasos: título sobrio y, solo en 01, 03 y 05, una línea de apoyo pequeña y discreta (para ocultarlas todas: #ventas .vn-sub{display:none}) */
+#ventas .chain li{font-size:clamp(.98rem,1.08vw,1.06rem);line-height:1.3}
+#ventas .chain li .vn-sub{display:block;margin:7px auto 0;max-width:19ch;font-size:.88rem;font-weight:400;line-height:1.4;letter-spacing:0;color:var(--ink-2);opacity:.9}
+/* Cierre: más grande que el resto, pero callado (peso normal, tinta suave, sin recursos de énfasis) */
+#ventas .chain .note{margin:clamp(40px,4.6vw,64px) auto 0;max-width:34ch;font-size:clamp(1.2rem,1.9vw,1.6rem);font-weight:400;line-height:1.4;letter-spacing:-.005em;color:var(--ink-2);text-wrap:balance}
+@media (max-width:760px){
+  #ventas .chain li .vn-sub{margin:5px 0 0;max-width:34ch}
+  #ventas .chain .note{max-width:28ch}
+}
+</style>
+<section class="transform ventas" id="ventas" data-tone="light" aria-labelledby="vn-t">
+  <div class="wrap">
+    <div class="chain" id="chain">
+      <h2 class="display h2 rv" id="vn-t">Así se convierte un empaque en ventas.</h2>
+      <svg class="line" viewBox="0 0 1000 120" aria-hidden="true">
+        <path class="track" d="M100 60 C 170 18, 230 102, 300 60 S 430 18, 500 60 S 630 102, 700 60 S 830 18, 900 60"/>
+        <path class="draw" pathLength="1" d="M100 60 C 170 18, 230 102, 300 60 S 430 18, 500 60 S 630 102, 700 60 S 830 18, 900 60"/>
+        <circle cx="100" cy="60" r="11"/><circle cx="300" cy="60" r="11"/><circle cx="500" cy="60" r="11"/><circle cx="700" cy="60" r="11"/><circle cx="900" cy="60" r="11"/>
+      </svg>
+      <ol>
+        <li><span>01</span>Te eligen<small class="vn-sub">Destacas frente a otras opciones.</small></li>
+        <li><span>02</span>Pagan mejor</li>
+        <li><span>03</span>Lo ven otros.<small class="vn-sub">Publicidad que no pagaste.</small></li>
+        <li><span>04</span>Te recuerdan y recomiendan.</li>
+        <li><span>05</span>Creces<small class="vn-sub">Más clientes, más recurrencia, más marca.</small></li>
+      </ol>
+      <p class="note rv">El empaque deja de ser un gasto. Se convierte en parte de tu marca.</p>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "H4 · Empaque a ventas",
+  "settings": [],
+  "enabled_on": {
+    "templates": [
+      "index"
+    ]
+  }
+}
+{% endschema %}

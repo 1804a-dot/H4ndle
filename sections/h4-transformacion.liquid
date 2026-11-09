@@ -1,0 +1,49 @@
+<!-- ============ ANTES / DESPUÉS ============ -->
+<section class="transform" id="transformacion" data-tone="light" aria-labelledby="tr-t">
+  <div class="wrap">
+    <div class="head rv">
+      <div>
+        <p class="kicker"><svg aria-hidden="true"><use href="#four"/></svg>Mismo producto. Otra marca.</p>
+        <h2 class="display h2" id="tr-t">De invisible a <span class="ul">inolvidable.<svg class="squig" viewBox="0 0 100 12" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M2 8 Q 12 2 22 7 T 42 7 T 62 7 T 82 7 T 98 6"/></svg></span></h2>
+      </div>
+      <p class="lede">La comida es la misma. Lo que cambia es cómo la recuerda tu cliente. Pasa el mouse (o tu dedo) sobre la imagen para ver la diferencia.</p>
+    </div>
+    <div class="compare rv" id="compare">
+      <img src="{{ 'after-brand.jpg' | asset_url }}" width="1600" height="900" loading="lazy" alt="La misma caja con asa, ahora azul cobalto con dibujos blancos, en un estudio azul">
+      <div class="before-wrap"><img src="{{ 'before-generic.jpg' | asset_url }}" width="1600" height="900" loading="lazy" alt="Caja con asa blanca y genérica, sin marca, en un estudio gris"></div>
+      <div class="bar" aria-hidden="true"><span class="knob"><svg viewBox="0 0 24 24"><path d="M9 7l-5 5 5 5M15 7l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+      <span class="lbl l" aria-hidden="true">Genérico</span><span class="lbl r" aria-hidden="true">Con H4NDLE</span>
+      <span class="hintm" aria-hidden="true"><span class="h-mouse">Mueve el mouse sobre la imagen</span><span class="h-touch">Toca o desliza sobre la imagen</span></span>
+      <input type="range" min="0" max="100" value="50" step="1" aria-label="Comparar la caja genérica con la caja con marca">
+    </div>
+
+    <div class="chain" id="chain">
+      <h3 class="rv">Así se convierte un empaque en ventas.</h3>
+      <svg class="line" viewBox="0 0 1000 120" aria-hidden="true">
+        <path class="track" d="M100 60 C 170 18, 230 102, 300 60 S 430 18, 500 60 S 630 102, 700 60 S 830 18, 900 60"/>
+        <path class="draw" pathLength="1" d="M100 60 C 170 18, 230 102, 300 60 S 430 18, 500 60 S 630 102, 700 60 S 830 18, 900 60"/>
+        <circle cx="100" cy="60" r="11"/><circle cx="300" cy="60" r="11"/><circle cx="500" cy="60" r="11"/><circle cx="700" cy="60" r="11"/><circle cx="900" cy="60" r="11"/>
+      </svg>
+      <ol>
+        <li><span>01</span>Empaque con identidad</li>
+        <li><span>02</span>Mejor percepción de marca</li>
+        <li><span>03</span>Más confianza en la calidad</li>
+        <li><span>04</span>Se comparte en redes</li>
+        <li><span>05</span>Más ventas y recompra</li>
+      </ol>
+      <p class="note rv">El empaque deja de ser un gasto de operación y se vuelve una herramienta para crecer.</p>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "H4 · Antes y después",
+  "settings": [],
+  "enabled_on": {
+    "templates": [
+      "index"
+    ]
+  }
+}
+{% endschema %}

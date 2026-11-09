@@ -1,0 +1,15 @@
+{%- comment -%} H4 · Página simple (texto enriquecido) {%- endcomment -%}
+<section class="st-section" data-tone="light" aria-labelledby="st-page-title">
+  <div class="wrap st-form-wide">
+    <p class="kicker"><svg aria-hidden="true"><use href="#four"/></svg>H4NDLE</p>
+    <h1 class="display h2" id="st-page-title">{{ page.title }}</h1>
+    <div class="st-rte st-mt">{{ page.content }}</div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "H4 · Página",
+  "settings": []
+}
+{% endschema %}

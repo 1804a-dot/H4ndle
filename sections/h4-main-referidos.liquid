@@ -1,0 +1,438 @@
+{%- comment -%}
+  H4 · Referidos: /pages/referidos (plantilla page.referidos; /referidos redirige aquí).
+  Estados: visitante · cliente con código · cliente sin código.
+  Datos del cliente (metacampos h4ndle.*, los llena Shopify Flow):
+    codigo_referido (texto) · referidos_total (entero) · bono_pendiente (decimal, MXN).
+    Disponible = crédito en tienda nativo (customer.store_credit_account.balance).
+  Vista de ejemplo (datos ficticios; nunca se muestra a un cliente con sesión iniciada):
+    · Editor de temas: ajuste «Vista de ejemplo» (solo con request.design_mode y sin cliente).
+    · Enlace de revisión: /pages/referidos?vista=ejemplo (con código) o ?vista=sin-codigo.
+      Las vistas de ejemplo solo existen en el HTML de visitantes; el JS de abajo las muestra.
+  Vocabulario: para quien refiere siempre «bono», nunca «descuento».
+{%- endcomment -%}
+{%- liquid
+  assign h4r_bono = section.settings.bono | strip | default: 'el 5% de su compra'
+  assign h4r_vence = section.settings.vencimiento | strip
+  assign h4r_tope = section.settings.tope | strip
+  assign h4r_msg = section.settings.mensaje | strip | default: 'Te recomiendo H4NDLE para los empaques de tu marca. Con mi código [CODIGO] tienes envío gratis en tu primer pedido:'
+  assign h4r_crear = routes.root_url | append: '#crear'
+  assign h4r_login = routes.storefront_login_url | default: routes.account_login_url
+  assign h4r_host = request.host | remove_first: 'www.'
+  assign h4r_mail_s = 'Te recomiendo H4NDLE' | url_encode | replace: '+', '%20'
+
+  assign h4r_demo = ''
+  if request.design_mode
+    unless customer
+      if section.settings.vista_ejemplo == 'con_codigo'
+        assign h4r_demo = 'demo-code'
+      elsif section.settings.vista_ejemplo == 'sin_codigo'
+        assign h4r_demo = 'demo-nocode'
+      endif
+    endunless
+  endif
+
+  assign h4r_code_real = ''
+  assign h4r_orders = 0
+  if customer
+    assign h4r_code_real = customer.metafields.h4ndle.codigo_referido.value | strip
+    assign h4r_orders = customer.orders_count | default: 0
+    if h4r_code_real != blank
+      assign h4r_views = 'code' | split: ','
+    else
+      assign h4r_views = 'nocode' | split: ','
+    endif
+  else
+    assign h4r_views = 'visitor,demo-code,demo-nocode' | split: ','
+  endif
+-%}
+<style>
+.h4-ref .card:hover{transform:none;box-shadow:none}
+.h4-ref [data-h4ref-view][hidden]{display:none!important}
+.h4-ref-top{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:clamp(28px,5vw,72px);align-items:center}
+.h4-ref-head .lede{max-width:46ch}
+.h4-ref-pills{list-style:none;margin:26px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:10px}
+.h4-ref-pills li{display:inline-flex;align-items:center;gap:10px;padding:9px 16px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:.9rem;font-weight:600;line-height:1.3;color:var(--ink)}
+.h4-ref-pills b{font-family:var(--f-mono);font-weight:500;font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;color:var(--royal);white-space:nowrap}
+.h4-ref-panel{--pad:clamp(22px,4vw,34px);position:relative;padding:var(--pad);container-type:inline-size;box-shadow:0 34px 70px -46px rgba(8,26,69,.55)}
+.h4-ref-demo{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:0 0 20px;padding:10px 12px;border-radius:12px;background:#FFF6DB;border:1px dashed #B88A12;color:#4A3600;font-size:.84rem;line-height:1.4}
+.h4-ref-demo b{font-family:var(--f-mono);font-weight:500;font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;padding:4px 9px;border-radius:999px;background:#7A5600;color:#fff}
+.h4-ref-label{margin:0 0 10px;color:var(--ink-2)}
+.h4-ref-code{margin:0;font-family:var(--f-display);font-stretch:125%;font-weight:800;font-size:clamp(2.1rem,5.6vw,3.4rem);font-size:clamp(2.1rem,min(5.6vw,12.5cqi),3.4rem);line-height:1.04;letter-spacing:.01em;color:var(--royal);overflow-wrap:anywhere;-webkit-user-select:all;user-select:all}
+.h4-ref-code.is-ghost{color:transparent;-webkit-text-stroke:1.5px rgba(19,75,165,.45);-webkit-user-select:none;user-select:none}
+@supports not (-webkit-text-stroke:1px black){.h4-ref-code.is-ghost{color:rgba(19,75,165,.3)}}
+.h4-ref-cut{position:relative;height:0;margin:24px calc(var(--pad)*-1);border-top:2px dashed var(--line)}
+.h4-ref-cut::before,.h4-ref-cut::after{content:"";position:absolute;top:-12px;width:22px;height:22px;border-radius:50%;background:var(--canvas);box-shadow:inset 0 0 0 1px var(--line)}
+.h4-ref-cut::before{left:-12px}
+.h4-ref-cut::after{right:-12px}
+.h4-ref-url{margin:0;padding:12px 14px;border-radius:14px;border:1.5px dashed var(--line-strong);background:var(--canvas);font-family:var(--f-mono);font-size:.8rem;line-height:1.5;color:var(--ink);overflow-wrap:anywhere;-webkit-user-select:all;user-select:all}
+.h4-ref-acts{display:flex;flex-wrap:wrap;gap:12px;margin-top:20px}
+.h4-ref-panel .btn{width:100%;max-width:100%;padding:12px 1.4em;line-height:1.3;text-align:center}
+.h4-ref-acts .btn{flex:1 1 170px;width:auto}
+.h4-ref-panel .btn svg{flex:none}
+.h4-ref-acts .btn:hover svg{transform:none}
+.h4-ref .btn.ghost:hover{background:rgba(11,22,51,.06)}
+.h4-ref .btn.is-done,.h4-ref .btn.is-done:hover{background:#127A4E;border-color:#127A4E;color:#fff;box-shadow:none}
+.h4-ref-status{min-height:1.6em;margin:10px 0 0;font-size:.9rem;font-weight:600;color:#127A4E}
+.h4-ref-status.is-warn{color:var(--ink)}
+.h4-ref-share{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin-top:8px;padding-top:16px;border-top:1px solid var(--line)}
+.h4-ref-share>.mono{color:var(--ink-2);margin-right:4px}
+.h4-ref-chip{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 14px;border-radius:999px;border:1.5px solid var(--line);background:#fff;color:var(--ink);font-family:var(--f-body);font-weight:600;font-size:.88rem;line-height:1;text-decoration:none;cursor:pointer;transition:border-color .3s var(--ease-out),background .3s var(--ease-out)}
+.h4-ref-chip:hover{border-color:var(--ink);background:var(--canvas)}
+.h4-ref-chip svg{width:18px;height:18px;flex:none}
+.h4-ref-chip.is-wa svg{color:#128C7E}
+.h4-ref-chip[hidden]{display:none}
+.h4-ref-note{margin:18px 0 20px;font-size:1.04rem;font-weight:600;line-height:1.45;color:var(--ink)}
+.h4-ref-credit{margin:20px 0 0;padding-top:18px;border-top:1px solid var(--line);color:var(--ink-2)}
+.h4-ref-credit b{color:var(--ink);font-family:var(--f-display);font-stretch:125%;font-size:1.25rem;white-space:nowrap}
+.h4-ref-login{margin:16px 0 0;font-size:.92rem;text-align:center;color:var(--ink-2)}
+.h4-ref-login a,.h4-ref-link{color:var(--royal);font-weight:600;text-underline-offset:3px}
+.h4-ref-board{margin-top:clamp(44px,6vw,72px)}
+.h4-ref-board-head{display:flex;align-items:center;justify-content:space-between;gap:12px 20px;flex-wrap:wrap;margin-bottom:16px}
+.h4-ref-board-head .kicker{margin:0}
+.h4-ref-link{display:inline-flex;align-items:center;gap:6px;font-size:.94rem}
+.h4-ref-link svg{width:16px;height:16px;flex:none}
+.h4-ref-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin:0}
+.h4-ref-stat{padding:22px 24px 24px;gap:8px}
+.h4-ref-stat dt{color:var(--ink-2)}
+.h4-ref-stat dd{margin:0}
+.h4-ref-n{font-family:var(--f-display);font-stretch:125%;font-weight:800;font-size:clamp(2.2rem,4.2vw,3.2rem);line-height:1.04;color:var(--ink);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.h4-ref-cap{color:var(--ink-2);font-size:.88rem;line-height:1.45}
+.h4-ref-stat.is-hi{background:var(--royal);border-color:var(--royal);color:#fff}
+.h4-ref-stat.is-hi dt,.h4-ref-stat.is-hi .h4-ref-cap{color:#DCE6FB}
+.h4-ref-stat.is-hi .h4-ref-n{color:#fff}
+.h4-ref-board-note{margin:14px 0 0;color:var(--ink-2);font-size:.88rem}
+.h4-ref-gain{padding:clamp(72px,10vw,128px) 0}
+.h4-ref-gain-head{margin-bottom:clamp(28px,4vw,48px)}
+.h4-ref-gain-head .h2{max-width:20ch}
+.h4-ref-gain-grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.h4-ref-gain-card{position:relative;overflow:hidden;padding:clamp(24px,4vw,40px);border-radius:22px;border:1px solid var(--line-dark);background:rgba(238,243,255,.05)}
+.h4-ref-gain-card.is-you{background:linear-gradient(150deg,var(--royal) 0%,#0C2C73 72%);border-color:rgba(140,196,255,.35)}
+.h4-ref-gain-card>svg{position:absolute;right:clamp(16px,3vw,32px);bottom:clamp(16px,3vw,28px);width:clamp(84px,11vw,132px);height:clamp(89px,11.7vw,140px);color:#fff;opacity:.1;pointer-events:none}
+.h4-ref-gain-card .mono{margin:0;color:var(--paper-2)}
+.h4-ref-big{position:relative;margin:14px 0 14px;font-family:var(--f-display);font-stretch:125%;font-weight:800;font-size:clamp(2.5rem,5.6vw,4.4rem);line-height:.98;letter-spacing:-.02em;color:#fff}
+.h4-ref-gain-txt{position:relative;margin:0;max-width:44ch;color:#DCE6FB;font-size:1.02rem;line-height:1.55}
+.h4-ref-more{padding:clamp(72px,10vw,128px) 0 clamp(64px,9vw,120px)}
+.h4-ref-steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.h4-ref-steps .card{gap:10px;padding:24px 24px 26px}
+.h4-ref-num{font-family:var(--f-display);font-stretch:125%;font-weight:800;font-size:2.2rem;line-height:1;color:transparent;-webkit-text-stroke:1.5px var(--accent)}
+@supports not (-webkit-text-stroke:1px black){.h4-ref-num{color:var(--royal)}}
+.h4-ref-steps h3{margin:4px 0 0;font-size:1.08rem;line-height:1.35;color:var(--ink)}
+.h4-ref-steps p{margin:0;color:var(--ink-2);font-size:.92rem;line-height:1.5}
+.h4-ref-cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(32px,5vw,72px);margin-top:clamp(56px,8vw,96px)}
+.h4-ref-sub{margin:0 0 18px;font-family:var(--f-display);font-stretch:125%;font-weight:800;font-size:clamp(1.35rem,2.1vw,1.7rem);line-height:1.15;letter-spacing:-.01em;color:var(--ink)}
+.h4-ref-rules ul{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.h4-ref-rules li{position:relative;padding-left:32px;color:var(--ink-2);font-size:.95rem;line-height:1.5}
+.h4-ref-rules li::before{content:"";position:absolute;left:0;top:.15em;width:20px;height:20px;border-radius:50%;background:var(--accent-muted) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4L18 8' fill='none' stroke='%23134BA5' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/12px no-repeat}
+.h4-ref-rules b{color:var(--ink)}
+.h4-ref-faq details{border-bottom:1px solid var(--line-strong)}
+.h4-ref-faq details:first-of-type{border-top:1px solid var(--line-strong)}
+.h4-ref-faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:20px;min-height:44px;padding:18px 0;font-weight:600;font-size:1.02rem;line-height:1.35}
+.h4-ref-faq summary::-webkit-details-marker{display:none}
+.h4-ref-faq summary i{flex:none;width:30px;height:30px;border-radius:50%;border:1.5px solid var(--line-strong);position:relative;transition:background .3s}
+.h4-ref-faq summary i::before,.h4-ref-faq summary i::after{content:"";position:absolute;left:50%;top:50%;width:12px;height:2px;background:currentColor;transform:translate(-50%,-50%)}
+.h4-ref-faq summary i::after{transform:translate(-50%,-50%) rotate(90deg);transition:transform .4s var(--ease-out)}
+.h4-ref-faq details[open] summary i{background:var(--ink);color:#fff;border-color:var(--ink)}
+.h4-ref-faq details[open] summary i::after{transform:translate(-50%,-50%) rotate(0)}
+.h4-ref-faq details p{margin:0 0 20px;color:var(--ink-2);font-size:.95rem;line-height:1.55;max-width:60ch}
+.h4-ref-end{display:flex;align-items:center;justify-content:space-between;gap:18px 28px;flex-wrap:wrap;margin-top:clamp(56px,8vw,96px);padding:clamp(24px,4vw,40px);border-radius:22px;background:var(--deep);color:var(--paper)}
+.h4-ref-end p{margin:0;font-family:var(--f-display);font-stretch:125%;font-weight:800;font-size:clamp(1.3rem,2.4vw,1.9rem);line-height:1.15;max-width:24ch}
+.h4-ref-end .btn{flex:none}
+.h4-ref-end[hidden]{display:none}
+@media (pointer:coarse){.h4-ref-chip{min-height:44px}}
+@media (max-width:900px){.h4-ref-top{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:760px){
+  .h4-ref-steps,.h4-ref-gain-grid,.h4-ref-cols{grid-template-columns:minmax(0,1fr)}
+  .h4-ref-steps{gap:12px}
+  .h4-ref-stats{grid-template-columns:minmax(0,1fr);gap:10px}
+  .h4-ref-stat{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"t n" "c n";align-items:center;gap:4px 16px;padding:18px 20px}
+  .h4-ref-stat dt{grid-area:t}
+  .h4-ref-stat .h4-ref-n{grid-area:n;font-size:clamp(1.7rem,8vw,2.3rem);text-align:right}
+  .h4-ref-stat .h4-ref-cap{grid-area:c;font-size:.84rem}
+  .h4-ref-end .btn{width:100%}
+  .h4-ref-url{font-size:.74rem}
+}
+@media (prefers-reduced-motion:reduce){.h4-ref .btn,.h4-ref .card,.h4-ref-chip,.h4-ref-faq summary i,.h4-ref-faq summary i::after{transition:none}.h4-ref .btn:hover{transform:none}.h4-ref .btn:hover svg{transform:none}}
+</style>
+
+<section class="st-section h4-ref" data-tone="light" aria-labelledby="h4-ref-t" data-h4ref>
+  <div class="wrap">
+    <div class="h4-ref-top">
+      <div class="h4-ref-head">
+        <p class="kicker"><svg aria-hidden="true"><use href="#four"/></svg>Referidos</p>
+        <h1 class="display h2" id="h4-ref-t">Recomienda H4NDLE. Gana en tu siguiente pedido.</h1>
+        <p class="lede">Comparte tu código con otra marca. Cuando reciba su pedido, tú recibes {{ h4r_bono | escape }} en bono.</p>
+        <ul class="h4-ref-pills" aria-label="Qué gana cada quien">
+          <li><b>Para ti</b>Bono para tu siguiente pedido</li>
+          <li><b>Para la otra marca</b>Envío gratis en su primer pedido</li>
+        </ul>
+      </div>
+
+      {%- for v in h4r_views -%}
+      {%- liquid
+        assign h4r_is_demo = false
+        if v contains 'demo'
+          assign h4r_is_demo = true
+        endif
+        assign h4r_hide = false
+        if v == 'visitor' and h4r_demo != blank
+          assign h4r_hide = true
+        elsif h4r_is_demo and v != h4r_demo
+          assign h4r_hide = true
+        endif
+        assign h4r_code = ''
+        if v == 'code'
+          assign h4r_code = h4r_code_real
+        elsif v == 'demo-code'
+          assign h4r_code = 'TUMARCA'
+        endif
+        assign h4r_credit = 0
+        if v == 'code' or v == 'nocode'
+          assign h4r_credit = customer.store_credit_account.balance | default: 0
+        endif
+      -%}
+      <div class="card h4-ref-panel" data-h4ref-view="{{ v }}"{% if h4r_hide %} hidden{% endif %}>
+        {%- if h4r_is_demo %}
+        <p class="h4-ref-demo"><b>Vista de ejemplo</b>Datos ficticios: así ve esta página un cliente {% if h4r_code != blank %}con código{% else %}que aún no tiene código{% endif %}.</p>
+        {%- endif %}
+
+        {%- if h4r_code != blank -%}
+        {%- liquid
+          assign h4r_path = h4r_code | url_encode | prepend: '/discount/'
+          assign h4r_url = request.origin | append: h4r_path
+          assign h4r_txt = h4r_msg | replace: '[CODIGO]', h4r_code | append: ' ' | append: h4r_url
+          assign h4r_txt_enc = h4r_txt | url_encode | replace: '+', '%20'
+        -%}
+        <h2 class="mono h4-ref-label">Tu código</h2>
+        <p class="h4-ref-code" id="h4r-c-{{ v }}">{{ h4r_code | escape }}</p>
+        <div class="h4-ref-cut" aria-hidden="true"></div>
+        <p class="mono h4-ref-label">Tu link</p>
+        <p class="h4-ref-url" id="h4r-u-{{ v }}">{{ h4r_host }}{{ h4r_path }}</p>
+        <div class="h4-ref-acts">
+          <button type="button" class="btn" data-h4ref-copy="{{ h4r_code | escape }}" data-h4ref-src="h4r-c-{{ v }}" data-h4ref-msg="Listo: copiaste tu código {{ h4r_code | escape }}."><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8.5" y="8.5" width="11" height="11" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.9"/><path d="M15.5 8.5V7a2.5 2.5 0 0 0-2.5-2.5H7A2.5 2.5 0 0 0 4.5 7v6A2.5 2.5 0 0 0 7 15.5h1.5" fill="none" stroke="currentColor" stroke-width="1.9"/></svg>Copiar código</button>
+          <button type="button" class="btn ghost" data-h4ref-copy="{{ h4r_url | escape }}" data-h4ref-src="h4r-u-{{ v }}" data-h4ref-msg="Listo: copiaste tu link."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>Copiar link</button>
+        </div>
+        <p class="h4-ref-status" role="status" aria-live="polite" aria-atomic="true" data-h4ref-live></p>
+        <div class="h4-ref-share">
+          <span class="mono">Compartir</span>
+          <a class="h4-ref-chip is-wa" href="https://wa.me/?text={{ h4r_txt_enc }}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.16-.17.2-.35.22-.64.08-.3-.15-1.26-.47-2.39-1.48-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.6.13-.14.3-.35.45-.52.15-.18.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.67-1.61-.92-2.2-.24-.59-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.07 2.88 1.21 3.07.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.7.63.71.22 1.36.19 1.87.12.57-.09 1.76-.72 2-1.42.25-.69.25-1.29.18-1.41-.08-.13-.28-.2-.57-.35m-5.42 7.4h-.01a9.87 9.87 0 0 1-5.03-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.86 9.86 0 0 1-1.51-5.26c0-5.45 4.44-9.88 9.89-9.88 2.64 0 5.12 1.03 6.99 2.9a9.83 9.83 0 0 1 2.89 6.99c0 5.45-4.44 9.88-9.88 9.88m8.41-18.3A11.82 11.82 0 0 0 12.05 0C5.5 0 .16 5.34.16 11.89c0 2.1.55 4.14 1.59 5.95L.06 24l6.3-1.65a11.88 11.88 0 0 0 5.69 1.45h.01c6.55 0 11.89-5.34 11.89-11.89 0-3.18-1.24-6.17-3.48-8.41Z"/></svg>WhatsApp<span class="sr-only"> (se abre en otra pestaña)</span></a>
+          <a class="h4-ref-chip" href="mailto:?subject={{ h4r_mail_s }}&amp;body={{ h4r_txt_enc }}"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="13" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m4.5 7 7.5 6 7.5-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>Correo</a>
+          <button type="button" class="h4-ref-chip" data-h4ref-share data-h4ref-text="{{ h4r_msg | replace: '[CODIGO]', h4r_code | escape }}" data-h4ref-url="{{ h4r_url | escape }}" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V4m0 0L8 8m4-4 4 4M6 12v6.5A1.5 1.5 0 0 0 7.5 20h9a1.5 1.5 0 0 0 1.5-1.5V12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Más opciones</button>
+        </div>
+
+        {%- else -%}
+        <h2 class="mono h4-ref-label">Tu código</h2>
+        <p class="h4-ref-code is-ghost" aria-hidden="true">TUMARCA</p>
+        {%- if v == 'nocode' and h4r_orders > 0 %}
+        <p class="h4-ref-note">Tu pedido ya está en proceso. Tu código aparece aquí en cuanto se entregue.</p>
+        <a class="btn ghost" href="{{ routes.account_url }}">Ver mis pedidos <svg aria-hidden="true"><use href="#arrow"/></svg></a>
+        {%- else %}
+        <p class="h4-ref-note">{% if v == 'visitor' %}Tu código será el nombre de tu marca y llega con tu primer pedido entregado.{% else %}Todavía no tienes código. Llega con tu primer pedido entregado y será el nombre de tu marca.{% endif %}</p>
+        <a class="btn" href="{{ h4r_crear }}">Haz tu primer pedido y obtén tu código <svg aria-hidden="true"><use href="#arrow"/></svg></a>
+        {%- endif %}
+        {%- if v == 'visitor' %}
+        <p class="h4-ref-login">¿Ya compraste? <a href="{{ h4r_login }}" rel="nofollow">Inicia sesión para ver tu código</a></p>
+        {%- endif %}
+        {%- if h4r_credit > 0 %}
+        <p class="h4-ref-credit">Tu crédito disponible: <b>{{ h4r_credit | money }}</b></p>
+        {%- endif %}
+        {%- endif %}
+      </div>
+      {%- endfor -%}
+    </div>
+
+    {%- for v in h4r_views -%}
+    {%- if v == 'code' or v == 'demo-code' -%}
+    {%- liquid
+      assign h4r_hide = false
+      if v == 'demo-code' and h4r_demo != 'demo-code'
+        assign h4r_hide = true
+      endif
+      if v == 'code'
+        assign h4r_refs = customer.metafields.h4ndle.referidos_total.value | default: 0
+        assign h4r_pend = customer.metafields.h4ndle.bono_pendiente.value | default: 0
+        assign h4r_pend = h4r_pend | times: 100 | round
+        assign h4r_credit = customer.store_credit_account.balance | default: 0
+      else
+        assign h4r_refs = 3
+        assign h4r_pend = 45000
+        assign h4r_credit = 90000
+      endif
+    -%}
+    <div class="h4-ref-board" role="region" aria-labelledby="h4r-b-{{ v }}" data-h4ref-view="{{ v }}"{% if h4r_hide %} hidden{% endif %}>
+      <div class="h4-ref-board-head">
+        <h2 class="kicker" id="h4r-b-{{ v }}"><svg aria-hidden="true"><use href="#four"/></svg>Tu tablero{% if v == 'demo-code' %} · ejemplo{% endif %}</h2>
+        <a class="h4-ref-link" href="{{ routes.account_url }}" rel="nofollow">Mi cuenta <svg aria-hidden="true"><use href="#arrow"/></svg></a>
+      </div>
+      <dl class="h4-ref-stats">
+        <div class="card h4-ref-stat"><dt class="mono">Referidos</dt><dd class="h4-ref-n">{{ h4r_refs }}</dd><dd class="h4-ref-cap">Marcas que recomendaste y ya recibieron su pedido.</dd></div>
+        <div class="card h4-ref-stat"><dt class="mono">Pendiente</dt><dd class="h4-ref-n">{{ h4r_pend | money_without_trailing_zeros }}</dd><dd class="h4-ref-cap">Bono en camino: se libera cuando su pedido se entregue.</dd></div>
+        <div class="card h4-ref-stat is-hi"><dt class="mono">Disponible</dt><dd class="h4-ref-n">{{ h4r_credit | money_without_trailing_zeros }}</dd><dd class="h4-ref-cap">Tu crédito para el siguiente pedido. Al pagar, elige «Aplicar crédito».</dd></div>
+      </dl>
+      <p class="h4-ref-board-note">Tu código, tu link y tu crédito disponible siempre están aquí. Tu crédito también aparece en Mi cuenta.</p>
+    </div>
+    {%- endif -%}
+    {%- endfor -%}
+  </div>
+</section>
+
+<section class="h4-ref-gain dark" data-tone="dark" aria-labelledby="h4r-gain-t">
+  <div class="wrap">
+    <div class="h4-ref-gain-head">
+      <p class="kicker"><svg aria-hidden="true"><use href="#four"/></svg>Qué ganas</p>
+      <h2 class="display h2" id="h4r-gain-t">Ganas tú y gana la marca que recomiendas.</h2>
+    </div>
+    <ul class="h4-ref-gain-grid">
+      <li class="h4-ref-gain-card is-you">
+        <svg aria-hidden="true" viewBox="0 0 264.45 279.85"><use href="#four"/></svg>
+        <p class="mono">Para ti</p>
+        <p class="h4-ref-big">Bono</p>
+        <p class="h4-ref-gain-txt">Recibes {{ h4r_bono | escape }} en bono cuando la marca que recomendaste recibe su pedido. Se guarda como crédito en tu cuenta H4NDLE y lo usas en tu siguiente pedido.</p>
+      </li>
+      <li class="h4-ref-gain-card">
+        <p class="mono">Para la marca que recomiendas</p>
+        <p class="h4-ref-big">Envío gratis</p>
+        <p class="h4-ref-gain-txt">En su primer pedido, con tu código o con tu link. Es para marcas que compran por primera vez en H4NDLE.</p>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section class="h4-ref-more" data-tone="light" aria-labelledby="h4r-how-t">
+  <div class="wrap">
+    <h2 class="kicker" id="h4r-how-t"><svg aria-hidden="true"><use href="#four"/></svg>Cómo funciona</h2>
+    <ol class="h4-ref-steps">
+      <li class="card"><span class="h4-ref-num" aria-hidden="true">01</span><h3>Recibe tu código con tu primer pedido.</h3><p>Cuando se entrega tu primer pedido, tu código aparece en esta página al iniciar sesión.</p></li>
+      <li class="card"><span class="h4-ref-num" aria-hidden="true">02</span><h3>Compártelo con otra marca.</h3><p>Mándale tu código o tu link. Funciona de las dos formas: con el link se aplica solo al pagar.</p></li>
+      <li class="card"><span class="h4-ref-num" aria-hidden="true">03</span><h3>Cuando reciba su pedido, ganas tu bono.</h3><p>Se acredita en tu cuenta como crédito y lo usas en tu siguiente pedido.</p></li>
+    </ol>
+
+    <div class="h4-ref-cols">
+      <div class="h4-ref-rules">
+        <h2 class="h4-ref-sub">Cómo se cuenta un referido</h2>
+        <ul>
+          <li>Tienes código cuando tienes <b>al menos un pedido entregado</b>. Es el nombre de tu marca, en mayúsculas y sin espacios (ej. SMASHBITE).</li>
+          <li>Es para <b>marcas que compran por primera vez</b> en H4NDLE.</li>
+          <li>Tu código o tu link deben quedar puestos <b>antes de terminar el pago</b>. Después ya no se pueden agregar.</li>
+          <li>Un código por pedido. Cada pedido cuenta como <b>un solo referido</b>.</li>
+          <li>Tu propio pedido no cuenta: no puedes usar tu código para ti.</li>
+          <li>El bono se acredita <b>solo cuando su pedido se entrega</b>. Si el pedido se cancela o se reembolsa, no hay bono.</li>
+          {%- if h4r_vence != blank %}
+          <li>Vencimiento del bono: {{ h4r_vence | escape }}{% assign h4r_end = h4r_vence | slice: -1 %}{% unless h4r_end == '.' %}.{% endunless %}</li>
+          {%- endif %}
+          {%- if h4r_tope != blank %}
+          <li>Tope del bono: {{ h4r_tope | escape }}{% assign h4r_end = h4r_tope | slice: -1 %}{% unless h4r_end == '.' %}.{% endunless %}</li>
+          {%- endif %}
+        </ul>
+      </div>
+      <div class="h4-ref-faq">
+        <h2 class="h4-ref-sub">Preguntas rápidas</h2>
+        <details>
+          <summary>¿Dónde veo mi código y mi bono?<i aria-hidden="true"></i></summary>
+          <p>Aquí mismo, al iniciar sesión: tu código, tu link y tu tablero con Referidos, Pendiente y Disponible. Tu crédito disponible también aparece en Mi cuenta.</p>
+        </details>
+        <details>
+          <summary>¿Cómo uso mi bono?<i aria-hidden="true"></i></summary>
+          <p>En tu siguiente pedido, inicia sesión al pagar y elige «Aplicar crédito». Se resta del total de tu compra.</p>
+        </details>
+        <details>
+          <summary>¿Mi código sirve escrito o solo con el link?<i aria-hidden="true"></i></summary>
+          <p>Las dos. Con el link se aplica solo al pagar; si no, la otra marca lo escribe en la casilla de código antes de pagar.</p>
+        </details>
+        <details>
+          <summary>¿Qué pasa si la otra marca olvida poner mi código?<i aria-hidden="true"></i></summary>
+          <p>Si el pago ya se hizo sin tu código, ese pedido no cuenta como referido. Por eso conviene mandarle el link: se aplica solo.</p>
+        </details>
+      </div>
+    </div>
+
+    {%- if h4r_code_real == blank %}
+    {%- liquid
+      assign h4r_end_hide = false
+      if customer and h4r_orders > 0
+        assign h4r_end_hide = true
+      endif
+      if h4r_demo == 'demo-code'
+        assign h4r_end_hide = true
+      endif
+    -%}
+    <div class="h4-ref-end"{% if h4r_end_hide %} hidden{% endif %}>
+      <p>¿Aún no tienes código? Empieza con tu primer pedido.</p>
+      <a class="btn" href="{{ h4r_crear }}">Haz tu primer pedido y obtén tu código <svg aria-hidden="true"><use href="#arrow"/></svg></a>
+    </div>
+    {%- endif %}
+  </div>
+</section>
+
+<script>
+(()=>{const root=document.querySelector('[data-h4ref]');if(!root)return;
+const views=[...document.querySelectorAll('[data-h4ref-view]')];
+/* Vista de ejemplo por enlace (?vista=ejemplo | con-codigo | sin-codigo). Las vistas demo solo existen en el HTML de visitantes. */
+try{const q=(new URLSearchParams(location.search).get('vista')||'').toLowerCase();
+  const want={ejemplo:'demo-code','con-codigo':'demo-code','sin-codigo':'demo-nocode'}[q];
+  if(want&&views.some(el=>el.dataset.h4refView===want)){
+    views.forEach(el=>{const v=el.dataset.h4refView;if(v==='visitor'||v.indexOf('demo-')===0)el.hidden=v!==want});
+    document.querySelectorAll('.h4-ref-end').forEach(el=>{el.hidden=want==='demo-code'});
+  }}catch(e){}
+const tm=new WeakMap();
+const say=(live,msg,ok)=>{if(!live)return;clearTimeout(tm.get(live));live.textContent='';live.classList.toggle('is-warn',!ok);setTimeout(()=>{live.textContent=msg},60);tm.set(live,setTimeout(()=>{live.textContent=''},6000))};
+const pick=el=>{try{const r=document.createRange(),s=window.getSelection();r.selectNodeContents(el);s.removeAllRanges();s.addRange(r);return true}catch(e){return false}};
+const done=b=>{b.classList.add('is-done');setTimeout(()=>b.classList.remove('is-done'),2200)};
+const fallback=(b,el,msg,live)=>{let ok=false;if(el&&pick(el)){try{ok=document.execCommand('copy')}catch(e){ok=false}}
+  if(ok){try{window.getSelection().removeAllRanges()}catch(e){}say(live,msg,true);done(b)}else say(live,'No pudimos copiarlo. Ya quedó seleccionado: cópialo con tu teclado o mantenlo presionado.',false)};
+document.querySelectorAll('[data-h4ref-copy]').forEach(b=>b.addEventListener('click',()=>{
+  const val=b.getAttribute('data-h4ref-copy'),el=document.getElementById(b.getAttribute('data-h4ref-src')),msg=b.getAttribute('data-h4ref-msg')||'Copiado.';
+  const box=b.closest('[data-h4ref-view]'),live=box&&box.querySelector('[data-h4ref-live]');
+  if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(val).then(()=>{say(live,msg,true);done(b)},()=>fallback(b,el,msg,live))}else fallback(b,el,msg,live)}));
+if(navigator.share)document.querySelectorAll('[data-h4ref-share]').forEach(b=>{b.hidden=false;b.addEventListener('click',()=>{navigator.share({title:'H4NDLE',text:b.getAttribute('data-h4ref-text')||'',url:b.getAttribute('data-h4ref-url')||location.href}).catch(()=>{})})});
+})();
+</script>
+
+{% schema %}
+{
+  "name": "H4 · Referidos",
+  "settings": [
+    {
+      "type": "text",
+      "id": "bono",
+      "label": "Bono para quien refiere",
+      "default": "el 5% de su compra",
+      "info": "Completa la frase «tú recibes … en bono» (ej. «$300»). Si queda vacío se usa «el 5% de su compra»."
+    },
+    {
+      "type": "text",
+      "id": "vencimiento",
+      "label": "Vencimiento del bono",
+      "info": "Se muestra en las reglas como «Vencimiento del bono: …». Vacío = no se muestra."
+    },
+    {
+      "type": "text",
+      "id": "tope",
+      "label": "Tope del bono",
+      "info": "Se muestra en las reglas como «Tope del bono: …». Vacío = no se muestra."
+    },
+    {
+      "type": "text",
+      "id": "mensaje",
+      "label": "Mensaje para compartir",
+      "default": "Te recomiendo H4NDLE para los empaques de tu marca. Con mi código [CODIGO] tienes envío gratis en tu primer pedido:",
+      "info": "Se usa en WhatsApp, correo y «Más opciones». [CODIGO] se cambia por el código del cliente y al final se agrega su link."
+    },
+    {
+      "type": "header",
+      "content": "Vista de ejemplo"
+    },
+    {
+      "type": "select",
+      "id": "vista_ejemplo",
+      "label": "Vista de ejemplo (solo en el editor)",
+      "options": [
+        { "value": "ninguna", "label": "Ninguna (visitante)" },
+        { "value": "con_codigo", "label": "Cliente con código" },
+        { "value": "sin_codigo", "label": "Cliente sin código" }
+      ],
+      "default": "ninguna",
+      "info": "Muestra datos ficticios solo dentro del editor de temas. Fuera del editor (sin sesión): /pages/referidos?vista=ejemplo o ?vista=sin-codigo. Un cliente con sesión nunca ve datos de ejemplo."
+    }
+  ]
+}
+{% endschema %}

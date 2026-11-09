@@ -1,0 +1,115 @@
+{%- comment -%} H4 · Página de producto. Sin JS: el formulario postea a /cart/add con la variante 0 (50 a 249 pzas). {%- endcomment -%}
+{%- assign tier_mode = false -%}
+{%- if product.variants.size == 3 -%}
+  {%- assign tier_mode = true -%}
+{%- endif -%}
+{%- assign default_variant = product.variants.first -%}
+{%- assign media_images = product.media | where: 'media_type', 'image' -%}
+
+<section class="st-section" data-tone="light" aria-labelledby="st-product-title">
+  <div class="wrap st-product">
+    <div class="st-gallery">
+      <div class="st-gallery-main">
+        {%- if media_images.size > 0 -%}
+          {%- assign first_media = media_images.first -%}
+          {%- assign first_media_alt = first_media.alt | default: product.title -%}
+          {{ first_media | image_url: width: 1200 | image_tag: id: 'st-mainImage', loading: 'eager', widths: '600, 900, 1200', sizes: '(min-width: 860px) 50vw, 100vw', alt: first_media_alt }}
+        {%- else -%}
+          <div class="st-gallery-empty" aria-hidden="true"></div>
+        {%- endif -%}
+      </div>
+      {%- if media_images.size > 1 -%}
+      <ul class="st-thumbs" id="st-thumbs">
+        {%- for media in media_images -%}
+        <li>
+          <button type="button" class="st-thumb{% if forloop.first %} is-active{% endif %}" data-full="{{ media | image_url: width: 1200 }}" aria-label="Ver imagen {{ forloop.index }} de {{ product.title | escape }}">
+            {{ media | image_url: width: 160 | image_tag: loading: 'lazy', alt: '', widths: '80, 160' }}
+          </button>
+        </li>
+        {%- endfor -%}
+      </ul>
+      {%- endif -%}
+    </div>
+
+    <div class="st-info">
+      <p class="kicker"><svg aria-hidden="true"><use href="#four"/></svg>{{ product.type | default: 'Empaque de marca' }}</p>
+      <h1 class="display h2" id="st-product-title">{{ product.title }}</h1>
+      <p class="lede">{{ product.description | strip_html | truncatewords: 28 }}</p>
+
+      <form action="{{ routes.cart_add_url }}" method="post" id="st-product-form"{% if tier_mode %} data-tier-form{% endif %}>
+        <input type="hidden" name="return_to" value="{{ routes.cart_url }}">
+        <input type="hidden" name="id" id="st-variant-id" value="{{ default_variant.id }}">
+
+        {%- if tier_mode -%}
+        <div class="st-tiers" id="st-tiers">
+          {%- for variant in product.variants -%}
+          <div class="st-tier{% if forloop.first %} is-on{% endif %}" data-tier="{{ forloop.index0 }}" data-price="{{ variant.price }}" data-variant-id="{{ variant.id }}">
+            <b>{{ variant.price | money }}</b>
+            <span>{{ variant.title }}</span>
+          </div>
+          {%- endfor -%}
+        </div>
+
+        <div class="st-field">
+          <label class="st-field-label" for="st-qty">Cantidad</label>
+          <div class="st-qty">
+            <button type="button" class="st-qty-btn" id="st-qty-minus" aria-label="Quitar 50 piezas">−</button>
+            <input type="range" id="st-qty" name="quantity" min="50" max="5000" step="50" value="50" aria-label="Cantidad de piezas, de 50 a 5,000">
+            <button type="button" class="st-qty-btn" id="st-qty-plus" aria-label="Agregar 50 piezas">+</button>
+            <output id="st-qty-out" for="st-qty">50 pzas</output>
+          </div>
+        </div>
+
+        <div class="st-price-row">
+          <div><span>Precio por pieza</span><b id="st-unit-price">{{ default_variant.price | money }}</b></div>
+          <div><span>Total</span><b id="st-total-price">{{ default_variant.price | times: 50 | money }}</b></div>
+        </div>
+        {%- else -%}
+        <div class="st-field">
+          <label class="st-field-label" for="st-variant">{{ 'products.product.variant' | t }}</label>
+          <select class="st-select" id="st-variant" name="id">
+            {%- for variant in product.variants -%}
+            <option value="{{ variant.id }}" {% if variant == product.selected_or_first_available_variant %}selected{% endif %} {% unless variant.available %}disabled{% endunless %}>
+              {{ variant.title }} — {{ variant.price | money }}{% unless variant.available %} ({{ 'products.product.sold_out' | t }}){% endunless %}
+            </option>
+            {%- endfor -%}
+          </select>
+        </div>
+        <div class="st-field">
+          <label class="st-field-label" for="st-quantity-basic">{{ 'products.product.quantity' | t }}</label>
+          <input class="st-input-number" type="number" id="st-quantity-basic" name="quantity" min="1" step="1" value="1" inputmode="numeric">
+        </div>
+        {%- endif -%}
+
+        <div class="st-actions">
+          {%- if product.available -%}
+          <button type="submit" class="btn" id="st-add-btn">Agregar al carrito · <span id="st-add-price">{{ default_variant.price | times: 50 | money }}</span></button>
+          {%- else -%}
+          <button type="submit" class="btn" disabled>{{ 'products.product.sold_out' | t }}</button>
+          {%- endif -%}
+        </div>
+      </form>
+
+      <p class="st-help"><a class="btn ghost sm" href="{{ routes.root_url }}?personalizar={{ product.handle }}#crear">Personalizar con tu marca</a></p>
+
+      <div class="st-trust">
+        <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><p><b>Entrega rápida</b><span>En 4 días hábiles o es gratis.</span></p></div>
+        <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19c8 0 14-6 14-14-8 0-14 6-14 14Zm0 0l7-7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><p><b>100% papel</b><span>No usamos plásticos.</span></p></div>
+        <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7M7 19a2 2 0 1 0 0-.01M17 19a2 2 0 1 0 0-.01" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><p><b>Envíos</b><span>A toda la república mexicana.</span></p></div>
+        <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3Zm-3 9l2 2 4-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></svg><p><b>Pago seguro</b><span>Compra en línea, sin cotizar.</span></p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap st-desc">
+    <h2 class="display h2">{{ 'products.product.description_title' | t }}</h2>
+    <div class="st-rte">{{ product.description }}</div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "H4 · Producto",
+  "settings": []
+}
+{% endschema %}

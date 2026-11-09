@@ -1,0 +1,49 @@
+<!-- ============ HERO (scroll video: un grupo de empaques genéricos recibe la pintura azul y todos se vuelven H4NDLE) ============ -->
+{%- comment -%}
+  Ajuste del cliente (10-oct-2026): el scroll se acortó de 420vh a 280vh y el titular "Tu comida ya tiene calidad." dura más (hasta el arranque de la pintura).
+  El chip "H4NDLE · Empaque de marca para pymes y Dark Kitchens" está OCULTO (no borrado), en la versión de scroll y en la estática: para volver a mostrarlo, saca su línea de dentro de estos comentarios.
+{%- endcomment -%}
+<section class="scrub hero" id="hero" data-tone="dark" data-video="{{ 'hero-grupo-scrub.mp4' | asset_url }}" data-bytes="4650396" data-poster="{{ 'hero-grupo-poster.jpg' | asset_url }}" data-ending="{{ 'hero-grupo-ending.jpg' | asset_url }}" data-f="0.05" style="--h:280vh" aria-label="De empaques genéricos a empaques de marca">
+  <div class="stage">
+    <div class="poster" aria-hidden="true"></div>
+    <video preload="none" muted playsinline disablepictureinpicture aria-hidden="true" tabindex="-1"></video>
+    <div class="scrim" aria-hidden="true"></div>
+
+    <div class="band fx-blur" data-a="0" data-b="0.38" style="--sa:.72">
+      {%- comment -%}<p class="chip kchip"><b>H4NDLE</b> Empaque de marca para pymes y Dark Kitchens</p>{%- endcomment -%}
+      <p class="display t"><span class="soft" aria-hidden="true">Tu comida ya tiene calidad.</span><span class="sharp">Tu comida ya tiene calidad.</span></p>
+    </div>
+    <div class="band fx-rise" data-a="0.74" data-b="1" data-ramp="0.1" style="--sa:.6">
+      <p class="display" data-split="words">Haz que se note.</p>
+      <div class="cta-row">
+        <a class="btn" href="#crear">Crear mi empaque <svg aria-hidden="true"><use href="#arrow"/></svg></a>
+        <span class="chip"><b>4</b> días o es gratis.*</span>
+      </div>
+    </div>
+
+    <svg class="ring" viewBox="0 0 48 48" aria-hidden="true"><circle class="bg" cx="24" cy="24" r="20" fill="none" stroke-width="3"/><circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-dasharray="126" style="stroke-dashoffset:var(--ld,126)"/></svg>
+  </div>
+</section>
+
+<section class="scrub-static hero-static" data-tone="dark" style="background-image:url('{{ 'hero-grupo-ending.jpg' | asset_url }}')" aria-label="De empaques genéricos a empaques de marca">
+  <div class="inner">
+    {%- comment -%}<p class="chip" style="margin:0 0 20px"><b>H4NDLE</b> Empaque de marca para pymes y Dark Kitchens</p>{%- endcomment -%}
+    <p class="display">Tu comida ya tiene calidad. Haz que se note.</p>
+    <div class="cta-row">
+      <a class="btn" href="#crear">Crear mi empaque <svg aria-hidden="true"><use href="#arrow"/></svg></a>
+      <span class="chip"><b>4</b> días o es gratis.*</span>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "H4 · Hero",
+  "settings": [],
+  "enabled_on": {
+    "templates": [
+      "index"
+    ]
+  }
+}
+{% endschema %}

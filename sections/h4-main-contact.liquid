@@ -1,0 +1,47 @@
+{%- comment -%} H4 · Contacto — formulario nativo "contact" con nombre, correo, teléfono y mensaje {%- endcomment -%}
+<section class="st-section" data-tone="light" aria-labelledby="st-contact-title">
+  <div class="wrap st-form-wrap">
+    <p class="kicker"><svg aria-hidden="true"><use href="#four"/></svg>{{ page.title | default: 'Contacto' }}</p>
+    <h1 class="display h2" id="st-contact-title">{{ 'contact.form.title' | t }}</h1>
+    <p class="lede">{{ 'contact.form.subtitle' | t }}</p>
+
+    {%- if page.content != blank -%}
+    <div class="st-rte st-mt">{{ page.content }}</div>
+    {%- endif -%}
+
+    {%- form 'contact', class: 'st-form st-mt' -%}
+      {%- if form.posted_successfully? -%}
+      <p class="st-success">{{ 'contact.form.post_success' | t }}</p>
+      {%- endif -%}
+      {%- if form.errors -%}
+      <div class="st-error-list">
+        <p>{{ 'contact.form.error_heading' | t }}</p>
+        {{ form.errors | default_errors }}
+      </div>
+      {%- endif -%}
+
+      <label for="ContactFormName">{{ 'contact.form.name' | t }}</label>
+      <input type="text" id="ContactFormName" name="contact[name]" value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}" autocomplete="name" required>
+
+      <label for="ContactFormEmail">{{ 'contact.form.email' | t }}</label>
+      <input type="email" id="ContactFormEmail" name="contact[email]" value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}" autocomplete="email" autocorrect="off" autocapitalize="off" required>
+
+      <label for="ContactFormPhone">{{ 'contact.form.phone' | t }}</label>
+      <input type="tel" id="ContactFormPhone" name="contact[phone]" value="{{ form.phone }}" autocomplete="tel">
+
+      <label for="ContactFormMessage">{{ 'contact.form.message' | t }}</label>
+      <textarea id="ContactFormMessage" name="contact[body]" required>{{ form.body }}</textarea>
+
+      <div class="st-actions-row">
+        <button type="submit" class="btn">{{ 'contact.form.send' | t }}</button>
+      </div>
+    {%- endform -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "H4 · Contacto",
+  "settings": []
+}
+{% endschema %}

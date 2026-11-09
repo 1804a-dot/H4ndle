@@ -1,0 +1,27 @@
+{%- comment -%} H4 · Artículo {%- endcomment -%}
+<section class="st-section" data-tone="light" aria-labelledby="st-article-title">
+  <div class="wrap st-form-wide">
+    <p class="kicker"><svg aria-hidden="true"><use href="#four"/></svg>{{ article.blog.title }}</p>
+    <h1 class="display h2" id="st-article-title">{{ article.title }}</h1>
+    <p class="lede">{{ article.published_at | date: '%d de %B de %Y' }}{% if article.author != blank %} · {{ article.author }}{% endif %}</p>
+
+    {%- if article.image -%}
+    <img class="st-article-image" src="{{ article.image | image_url: width: 1200 }}" width="1200" height="675" alt="{{ article.image.alt | default: article.title | escape }}" loading="eager">
+    {%- endif -%}
+
+    <div class="st-rte">{{ article.content }}</div>
+
+    {%- if article.tags.size > 0 -%}
+    <p class="st-note st-mt">{{ article.tags | join: ', ' }}</p>
+    {%- endif -%}
+
+    <a class="st-sm-link st-article-back" href="{{ blog.url }}">← Volver al blog</a>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "H4 · Artículo",
+  "settings": []
+}
+{% endschema %}

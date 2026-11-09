@@ -1,0 +1,64 @@
+{%- comment -%} H4 · Colección — reutiliza .cards/.card de h4ndle.css {%- endcomment -%}
+<section class="st-section" data-tone="light" aria-labelledby="st-collection-title">
+  <div class="wrap">
+    <div class="st-head">
+      <p class="kicker"><svg aria-hidden="true"><use href="#four"/></svg>Tienda</p>
+      <h1 class="display h2" id="st-collection-title">{{ collection.title }}</h1>
+      {%- if collection.description != blank -%}
+      <div class="lede st-rte">{{ collection.description }}</div>
+      {%- endif -%}
+    </div>
+
+    {%- paginate collection.products by 24 -%}
+      {%- if collection.products.size == 0 -%}
+      <p class="st-empty-note">{{ 'collections.general.no_products' | t }}</p>
+      {%- else -%}
+      <div class="cards" data-stagger>
+        {%- for product in collection.products -%}
+        <article class="card" style="--i:{{ forloop.index0 }}">
+          <a class="st-card-link" href="{{ product.url }}" tabindex="-1" aria-hidden="true">
+            <div class="ph">
+              {%- if product.featured_image -%}
+              <img src="{{ product.featured_image | image_url: width: 900 }}" width="900" height="900" loading="lazy" alt="">
+              {%- endif -%}
+            </div>
+          </a>
+          <div class="body">
+            <p class="cat mono">{{ product.type | default: 'Empaque de marca' }}</p>
+            <h3><a href="{{ product.url }}">{{ product.title }}</a></h3>
+            <p class="spec">{{ product.description | strip_html | truncatewords: 14 }}</p>
+            <div class="price"><b>{{ product.variants.first.price | money }}</b><span>c/u · desde 50 pzas</span></div>
+            {%- if product.variants.size == 3 -%}
+            <p class="vol">{{ product.variants.last.price | money }} c/u desde 1,000 pzas</p>
+            {%- endif -%}
+            <div class="acts"><a class="btn sm" href="{{ product.url }}">Ver producto</a></div>
+          </div>
+        </article>
+        {%- endfor -%}
+      </div>
+      {%- endif -%}
+
+      {%- if paginate.pages > 1 -%}
+      <nav class="st-pagination" aria-label="Paginación">
+        {%- if paginate.previous -%}
+        <a href="{{ paginate.previous.url }}">{{ 'general.pagination.previous' | t }}</a>
+        {%- else -%}
+        <span aria-disabled="true">{{ 'general.pagination.previous' | t }}</span>
+        {%- endif -%}
+        {%- if paginate.next -%}
+        <a href="{{ paginate.next.url }}">{{ 'general.pagination.next' | t }}</a>
+        {%- else -%}
+        <span aria-disabled="true">{{ 'general.pagination.next' | t }}</span>
+        {%- endif -%}
+      </nav>
+      {%- endif -%}
+    {%- endpaginate -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "H4 · Colección",
+  "settings": []
+}
+{% endschema %}

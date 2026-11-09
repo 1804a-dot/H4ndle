@@ -1,0 +1,203 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin language editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "general": {
+    "meta": {
+      "tags": "Etiquetas: {{ tags }}",
+      "page": "Página {{ page }}"
+    },
+    "404": {
+      "title": "No encontramos esta página",
+      "subtitle": "Puede que el enlace esté roto o que la página ya no exista.",
+      "link": "Volver a la tienda"
+    },
+    "search": {
+      "title": "Buscar",
+      "placeholder": "Buscar productos, páginas, artículos…",
+      "submit": "Buscar",
+      "no_results_html": "Sin resultados para “{{ terms }}”.",
+      "results_count": "{{ count }} resultados para “{{ terms }}”",
+      "results_for_products": "Productos",
+      "results_for_pages": "Páginas y artículos"
+    },
+    "pagination": {
+      "previous": "Anterior",
+      "next": "Siguiente"
+    }
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "Agregar al carrito",
+      "sold_out": "Agotado",
+      "unavailable": "No disponible",
+      "quantity": "Cantidad",
+      "pieces": "pzas",
+      "customize": "Personalizar con tu marca",
+      "description_title": "Descripción",
+      "tiers_title": "Precio por volumen",
+      "unit_price": "Precio por pieza",
+      "total_price": "Total",
+      "variant": "Variante"
+    }
+  },
+  "collections": {
+    "general": {
+      "no_products": "Todavía no hay productos en esta categoría.",
+      "all_products": "Todos los productos"
+    }
+  },
+  "cart": {
+    "general": {
+      "title": "Tu carrito",
+      "subtotal": "Subtotal",
+      "total": "Total",
+      "discount": "Descuento",
+      "bundle_discount": "Paquete de 3 (−{{ percent }}%)",
+      "update": "Actualizar",
+      "checkout": "Ir a pagar",
+      "empty": "Tu carrito está vacío.",
+      "continue_shopping": "Ver productos",
+      "remove": "Quitar",
+      "quantity": "Cantidad",
+      "free_shipping": "Envío gratis en compras de más de {{ amount }}.",
+      "free_shipping_remaining": "Te faltan {{ amount }} para envío gratis."
+    }
+  },
+  "customer": {
+    "login_page": {
+      "title": "Inicia sesión",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "sign_in": "Iniciar sesión",
+      "forgot_password": "¿Olvidaste tu contraseña?",
+      "cancel": "Cancelar",
+      "no_account": "¿No tienes cuenta?",
+      "create_account": "Crear cuenta",
+      "guest_title": "Continuar como invitado",
+      "guest_continue": "Continuar"
+    },
+    "recover_password": {
+      "title": "Restablecer tu contraseña",
+      "subtext": "Te enviaremos un correo para restablecer tu contraseña.",
+      "success": "Te enviamos un correo con instrucciones para restablecer tu contraseña."
+    },
+    "register": {
+      "title": "Crear cuenta",
+      "first_name": "Nombre",
+      "last_name": "Apellido",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "submit": "Crear cuenta",
+      "already_have": "¿Ya tienes cuenta?",
+      "sign_in": "Inicia sesión"
+    },
+    "account": {
+      "title": "Mi cuenta",
+      "details": "Datos de la cuenta",
+      "view_addresses": "Ver direcciones",
+      "return": "Volver a mi cuenta",
+      "log_out": "Cerrar sesión"
+    },
+    "orders": {
+      "title": "Historial de pedidos",
+      "order_number": "Pedido",
+      "date": "Fecha",
+      "payment_status": "Pago",
+      "fulfillment_status": "Envío",
+      "total": "Total",
+      "none": "Todavía no has hecho ningún pedido."
+    },
+    "order": {
+      "title": "Pedido {{ name }}",
+      "date_html": "Realizado el {{ date }}",
+      "cancelled_html": "Pedido cancelado el {{ date }}",
+      "cancelled_reason": "Motivo: {{ reason }}",
+      "billing_address": "Dirección de facturación",
+      "shipping_address": "Dirección de envío",
+      "product": "Producto",
+      "sku": "SKU",
+      "price": "Precio",
+      "quantity": "Cantidad",
+      "total": "Total",
+      "subtotal": "Subtotal",
+      "shipping": "Envío",
+      "tax": "Impuestos",
+      "discount": "Descuento",
+      "back_to_account": "Volver a mi cuenta"
+    },
+    "addresses": {
+      "title": "Tus direcciones",
+      "default": "Dirección predeterminada",
+      "add_new": "Agregar una dirección",
+      "edit_address": "Editar dirección",
+      "first_name": "Nombre",
+      "last_name": "Apellido",
+      "company": "Empresa (opcional)",
+      "address1": "Dirección",
+      "address2": "Interior, colonia, referencias (opcional)",
+      "city": "Ciudad",
+      "country": "País",
+      "province": "Estado",
+      "zip": "Código postal",
+      "phone": "Teléfono",
+      "set_default": "Usar como predeterminada",
+      "add": "Guardar dirección",
+      "update": "Actualizar dirección",
+      "cancel": "Cancelar",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "delete_confirm": "¿Seguro que quieres eliminar esta dirección?"
+    },
+    "activate_account": {
+      "title": "Activar cuenta",
+      "subtext": "Crea tu contraseña para activar tu cuenta.",
+      "password": "Contraseña",
+      "password_confirm": "Confirmar contraseña",
+      "submit": "Activar cuenta",
+      "decline": "Rechazar invitación"
+    },
+    "reset_password": {
+      "title": "Restablecer contraseña",
+      "subtext": "Elige una nueva contraseña para tu cuenta.",
+      "password": "Contraseña",
+      "password_confirm": "Confirmar contraseña",
+      "submit": "Restablecer contraseña"
+    }
+  },
+  "contact": {
+    "form": {
+      "title": "Escríbenos",
+      "subtitle": "Respondemos en menos de 24 horas hábiles.",
+      "name": "Nombre",
+      "email": "Correo electrónico",
+      "phone": "Teléfono (opcional)",
+      "message": "Mensaje",
+      "send": "Enviar mensaje",
+      "post_success": "Gracias, recibimos tu mensaje. Te respondemos pronto a tu correo.",
+      "error_heading": "Revisa lo siguiente:"
+    }
+  },
+  "gift_card": {
+    "issued": {
+      "title": "Tarjeta de regalo H4NDLE",
+      "subtext": "Usa este código al pagar para aplicar tu saldo.",
+      "expired": "Esta tarjeta de regalo venció el {{ expiry }}.",
+      "disabled": "Esta tarjeta de regalo está desactivada.",
+      "shop_link": "Ir a la tienda"
+    }
+  },
+  "password_page": {
+    "login_form_heading": "Entrar con la contraseña de la tienda",
+    "login_password_button": "Entrar",
+    "login_form_password_label": "Contraseña",
+    "login_form_error": "Contraseña incorrecta. Inténtalo de nuevo.",
+    "admin_link_html": "¿Eres el dueño de la tienda? <a href=\"/admin\">Inicia sesión aquí</a>"
+  }
+}

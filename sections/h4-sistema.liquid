@@ -1,0 +1,96 @@
+<!-- ============ SISTEMA ============ -->
+<section class="pin sys dark" id="sistema" data-tone="dark" data-step="0" style="--h:400vh" aria-labelledby="sys-t">
+  <div class="stage">
+    <div class="wrap grid">
+      <div class="sys-visual" aria-hidden="true">
+        <div class="boxmove" id="sysBox"></div>
+        <span class="opt-f" style="left:-4%;top:20%">Hamburguesa</span>
+        <span class="opt-f" style="left:0;top:64%">Pizza</span>
+        <span class="opt-f" style="right:-2%;top:74%">Sushi</span>
+        <span class="opt-f" style="right:-4%;top:18%">Postres</span>
+        <span class="opt-f sel" style="left:30%;top:-2%">Caja con asa</span>
+        <span class="tag">Caja con asa<b>$14.90 c/u</b>50 piezas</span>
+        <span class="paid"><i><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></i>Pagado en línea</span>
+        <svg class="speed" viewBox="0 0 100 60"><path d="M10 12h70M0 30h86M18 48h60"/></svg>
+        <span class="ship">Llega en <b>4</b> días hábiles</span>
+      </div>
+      <div>
+        <div class="intro">
+          <p class="kicker"><svg aria-hidden="true"><use href="#four"/></svg>El Sistema H4NDLE</p>
+          <h2 class="display h2" id="sys-t">Cinco pasos. Un solo lugar.</h2>
+          <p class="lede">Lo que normalmente son cinco procesos separados, aquí es una sola compra.</p>
+        </div>
+        <div class="steps">
+          <div class="st" data-i="0"><p class="num">01</p><h3>Elige</h3><p>Escoge el empaque que tu cocina necesita: hamburguesas, pizza, sushi, postres y más.</p></div>
+          <div class="st" data-i="1"><p class="num">02</p><h3>Personaliza</h3><p>Sube tu logo o cuéntanos cómo es tu marca. Lo adaptamos a cada pieza y lo apruebas antes de producir.</p></div>
+          <div class="st" data-i="2"><p class="num">03</p><h3>Ve el precio</h3><p>El precio aparece desde el primer clic. Sin cotizaciones y sin esperar un correo.</p></div>
+          <div class="st" data-i="3"><p class="num">04</p><h3>Compra</h3><p>Pagas en línea, como cualquier otra compra. Desde 50 piezas.</p></div>
+          <div class="st" data-i="4"><p class="num">05</p><h3>Recibe</h3><p>Llega listo para usar en 4 días hábiles. Si no llega, es gratis.*</p></div>
+        </div>
+        <ol class="rail" aria-hidden="true">
+          <li class="on">Elige</li><li>Personaliza</li><li>Precio</li><li>Compra</li><li>Recibe</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+{%- comment -%}
+  HowTo (AEO/GEO): los 5 pasos de arriba, con el mismo texto que se ve en la pagina.
+  Sin totalTime a proposito: son 4 dias habiles (no calendario) desde que apruebas el diseno, y ISO 8601 no expresa dias habiles.
+{%- endcomment %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "@id": {{ canonical_url | append: '#como-comprar' | json }},
+  "url": {{ canonical_url | append: '#sistema' | json }},
+  "name": "Cómo comprar empaques personalizados con tu logo en H4NDLE",
+  "description": "Cinco pasos para comprar empaques personalizados con tu logo en H4NDLE: elige el empaque, personalízalo, ve el precio, paga en línea y recíbelo en 4 días hábiles a partir de que apruebas tu diseño. La garantía de entrega aplica en Ciudad de México y área metropolitana.",
+  "inLanguage": "es-MX",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "name": {{ 'Elige' | json }},
+      "text": {{ 'Escoge el empaque que tu cocina necesita: hamburguesas, pizza, sushi, postres y más.' | json }}
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "name": {{ 'Personaliza' | json }},
+      "text": {{ 'Sube tu logo o cuéntanos cómo es tu marca. Lo adaptamos a cada pieza y lo apruebas antes de producir.' | json }}
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "name": {{ 'Ve el precio' | json }},
+      "text": {{ 'El precio aparece desde el primer clic. Sin cotizaciones y sin esperar un correo.' | json }}
+    },
+    {
+      "@type": "HowToStep",
+      "position": 4,
+      "name": {{ 'Compra' | json }},
+      "text": {{ 'Pagas en línea, como cualquier otra compra. Desde 50 piezas.' | json }}
+    },
+    {
+      "@type": "HowToStep",
+      "position": 5,
+      "name": {{ 'Recibe' | json }},
+      "text": {{ 'Llega listo para usar en 4 días hábiles. Si no llega, es gratis.*' | json }}
+    }
+  ]
+}
+</script>
+
+{% schema %}
+{
+  "name": "H4 · Sistema",
+  "settings": [],
+  "enabled_on": {
+    "templates": [
+      "index"
+    ]
+  }
+}
+{% endschema %}

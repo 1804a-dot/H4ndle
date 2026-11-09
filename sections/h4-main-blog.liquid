@@ -1,0 +1,47 @@
+{%- comment -%} H4 · Blog (listado de artículos) {%- endcomment -%}
+<section class="st-section" data-tone="light" aria-labelledby="st-blog-title">
+  <div class="wrap">
+    <div class="st-head">
+      <p class="kicker"><svg aria-hidden="true"><use href="#four"/></svg>Blog</p>
+      <h1 class="display h2" id="st-blog-title">{{ blog.title }}</h1>
+    </div>
+
+    {%- paginate blog.articles by 12 -%}
+      {%- if blog.articles.size == 0 -%}
+      <p class="st-empty-note">Todavía no hay artículos publicados.</p>
+      {%- else -%}
+      <ul class="st-search-list">
+        {%- for article in blog.articles -%}
+        <li>
+          <span class="st-search-type">{{ article.published_at | date: '%d de %B de %Y' }}{% if article.author != blank %} · {{ article.author }}{% endif %}</span>
+          <a href="{{ article.url }}">{{ article.title }}</a>
+          <p class="st-search-excerpt">{{ article.excerpt_or_content | strip_html | truncatewords: 30 }}</p>
+        </li>
+        {%- endfor -%}
+      </ul>
+      {%- endif -%}
+
+      {%- if paginate.pages > 1 -%}
+      <nav class="st-pagination" aria-label="Paginación">
+        {%- if paginate.previous -%}
+        <a href="{{ paginate.previous.url }}">{{ 'general.pagination.previous' | t }}</a>
+        {%- else -%}
+        <span aria-disabled="true">{{ 'general.pagination.previous' | t }}</span>
+        {%- endif -%}
+        {%- if paginate.next -%}
+        <a href="{{ paginate.next.url }}">{{ 'general.pagination.next' | t }}</a>
+        {%- else -%}
+        <span aria-disabled="true">{{ 'general.pagination.next' | t }}</span>
+        {%- endif -%}
+      </nav>
+      {%- endif -%}
+    {%- endpaginate -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "H4 · Blog",
+  "settings": []
+}
+{% endschema %}

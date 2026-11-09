@@ -1,0 +1,49 @@
+<!-- ============ COCINAS ============ -->
+<section class="kitchens" id="cocinas" data-tone="light" aria-labelledby="coc-t">
+  <style>
+    #cocinas .tile::after{background:linear-gradient(180deg,rgba(4,10,30,0) 32%,rgba(4,10,30,.86) 100%)}
+    #cocinas .tile .cap::before{content:"";position:absolute;z-index:-1;left:-100px;right:-100px;bottom:-100px;top:-64px;pointer-events:none;background:linear-gradient(180deg,rgba(4,10,30,0),rgba(4,10,30,.68) 64px)}
+    @media (min-width:721px) and (prefers-reduced-motion:no-preference){#cocinas .tile{width:min(max(30vw,300px),54vh)}}
+    #cocinas .tile p.hl{margin:-4px 0 14px;padding-left:10px;border-left:2px solid #8CC4FF;color:#fff;font-style:italic;font-weight:600;font-size:.86rem;line-height:1.35}
+    @media (max-width:720px){#cocinas .tile .cap{left:20px;right:20px;bottom:18px}#cocinas .tile h3+p{font-size:.9rem}#cocinas .tile p.hl{font-size:.82rem}}
+  </style>
+  <div class="stage">
+    <div class="track" id="track">
+      <div class="intro">
+        <p class="kicker"><svg aria-hidden="true"><use href="#four"/></svg>Para cada negocio</p>
+        <h2 class="display h2" id="coc-t">Encuentra tu empaque.</h2>
+        <p class="lede">Explora por industria y descubre los empaques que necesitas, listos para personalizar con tu marca.</p>
+      </div>
+      <article class="tile" aria-labelledby="coc-t-fastfood"><img src="{{ 'c-fastfood.jpg' | asset_url }}" width="900" height="1200" loading="lazy" decoding="async" alt="Hamburguesa con queso en caja para hamburguesa personalizada, azul con dibujos blancos, junto a papas fritas en su funda"><div class="cap"><p class="mono">Fast Food</p><h3 id="coc-t-fastfood">Hecho para antojar.</h3><p>Cajas para hamburguesa y pizza, holders y empaques que convierten cada pedido en parte de tu marca.</p><a href="#tienda" data-filter="fastfood" aria-label="Ver empaques para fast food">Ver empaques <svg aria-hidden="true"><use href="#arrow"/></svg></a></div></article>
+      <article class="tile" aria-labelledby="coc-t-sushi"><img src="{{ 'c-sushi.jpg' | asset_url }}" width="900" height="1200" loading="lazy" decoding="async" alt="Rollos de sushi y nigiri de salmón en caja azul con dibujos blancos, con salsa de soya y palillos"><div class="cap"><p class="mono">Asian &amp; Sushi</p><h3 id="coc-t-sushi">Diseñado diferente.</h3><p>Formatos inesperados, detalles inteligentes y empaques hechos para sorprender desde que se abren.</p><a href="#tienda" data-filter="sushi" aria-label="Ver empaques para comida asiática y sushi">Ver empaques <svg aria-hidden="true"><use href="#arrow"/></svg></a></div></article>
+      <article class="tile" aria-labelledby="coc-t-bakery"><img src="{{ 'c-bakery.jpg' | asset_url }}" width="900" height="1200" loading="lazy" decoding="async" alt="Conchas y donas en caja para pan dulce azul con dibujos blancos, abierta"><div class="cap"><p class="mono">Bakery &amp; Desserts</p><h3 id="coc-t-bakery">Demasiado bonito para ignorarlo.</h3><p>Detalles que convierten cada postre en algo que quieres mirar, fotografiar y compartir.</p><p class="hl">“El detalle también se come.”</p><a href="#tienda" data-filter="bakery" aria-label="Ver empaques para bakery y postres">Ver empaques <svg aria-hidden="true"><use href="#arrow"/></svg></a></div></article>
+      <article class="tile" aria-labelledby="coc-t-coffee"><img src="{{ 'c-cafe.jpg' | asset_url }}" width="900" height="1200" loading="lazy" decoding="async" alt="Vasos de café para llevar azules con dibujos blancos, con manga y portavasos, junto a un capuchino con arte latte"><div class="cap"><p class="mono">Coffee &amp; Drinks</p><h3 id="coc-t-coffee">Llévate la experiencia.</h3><p>Carriers, sleeves, vasos y formatos que hacen que hasta caminar con tu bebida se sienta parte de la marca.</p><p class="hl" lang="en">“Designed to be seen.”</p><a href="#tienda" data-filter="all" aria-label="Ver empaques para café y bebidas">Ver empaques <svg aria-hidden="true"><use href="#arrow"/></svg></a></div></article>
+      <article class="tile" aria-labelledby="coc-t-essentials"><img src="{{ 'c-alitas.jpg' | asset_url }}" width="900" height="1200" loading="lazy" decoding="async" alt="Caja ventilada azul con dibujos blancos con alitas, boneless y apio, acompañada de un vasito de aderezo a juego"><div class="cap"><p class="mono">Essentials</p><h3 id="coc-t-essentials">Todo suma.</h3><p>Los pequeños detalles que hacen que toda la experiencia se sienta pensada.</p><a href="#tienda" data-filter="all" aria-label="Ver empaques esenciales">Ver empaques <svg aria-hidden="true"><use href="#arrow"/></svg></a></div></article>
+      {% comment %}
+        Tiles ocultos (no borrados). Lista visible desde el 10-oct-2026: Fast Food, Asian & Sushi, Bakery & Desserts,
+        Coffee & Drinks y Essentials.
+        - Pizza: oculto por pedido del cliente (10-oct-2026, "lo de pizza pasa a fast food"); las cajas de pizza ahora se mencionan en el tile de Fast Food.
+        - Mexican Food y Healthy & Bowls: ocultos desde el 9-oct-2026.
+        Para reactivar uno, mueve su bloque arriba, antes de este comment, y quita el wrapper.
+        Nota: el tile Alitas & Pollo ("Crujiente hasta la puerta." / "Cajas ventiladas para alitas, boneless y pollo frito.",
+        filtro fastfood) se reutilizó: su foto c-alitas.jpg ahora ilustra Essentials.
+      <article class="tile" aria-labelledby="coc-t-pizza"><img src="{{ 'c-pizza.jpg' | asset_url }}" width="900" height="1200" loading="lazy" decoding="async" alt="Pizza de pepperoni en caja para pizza abierta, con la tapa azul y dibujos blancos de marca"><div class="cap"><p class="mono">Pizza</p><h3 id="coc-t-pizza">Haz memorable la caja.</h3><p>Porque antes de abrirla, tu cliente ya está viendo tu marca.</p><a href="#tienda" data-filter="pizza" aria-label="Ver empaques para pizza">Ver empaques <svg aria-hidden="true"><use href="#arrow"/></svg></a></div></article>
+      <article class="tile" aria-labelledby="coc-t-mexican"><img src="{{ 'c-mexican.jpg' | asset_url }}" width="900" height="1200" loading="lazy" decoding="async" alt="Tacos con salsas, limón y cebolla con cilantro en caja con compartimentos, azul con dibujos blancos y tapa abierta"><div class="cap"><p class="mono">Mexican Food</p><h3 id="coc-t-mexican">Todo el antojo en una sola caja.</h3><p>Charolas con espacio para tacos, salsas y aditamentos, todo en el mismo empaque.</p><a href="#tienda" data-filter="all" aria-label="Ver empaques para comida mexicana y tacos">Ver empaques <svg aria-hidden="true"><use href="#arrow"/></svg></a></div></article>
+      <article class="tile" aria-labelledby="coc-t-healthy"><img src="{{ 'c-healthy.jpg' | asset_url }}" width="900" height="1200" loading="lazy" decoding="async" alt="Bowl de ensalada con aguacate, pollo y quinoa en recipiente de papel azul con dibujos blancos y tapa transparente"><div class="cap"><p class="mono">Healthy &amp; Bowls</p><h3 id="coc-t-healthy">Frescura que se nota.</h3><p>Bowls y ensaladeras con tapa para llevar.</p><a href="#tienda" data-filter="all" aria-label="Ver empaques para bowls y comida saludable">Ver empaques <svg aria-hidden="true"><use href="#arrow"/></svg></a></div></article>
+      {% endcomment %}
+    </div>
+    <div class="hint mono" aria-hidden="true"><span>Sigue bajando</span><i><b id="kitBar"></b></i></div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "H4 · Cocinas",
+  "settings": [],
+  "enabled_on": {
+    "templates": [
+      "index"
+    ]
+  }
+}
+{% endschema %}

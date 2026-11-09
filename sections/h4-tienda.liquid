@@ -1,0 +1,153 @@
+<!-- ============ TIENDA ============ -->
+{%- assign kit_bono = section.settings.kit_bono | default: '30% de descuento' -%}
+<style>
+/* H4 · Tienda — kit de marca, buscador, grupos de tarjetas e indicador "En tu kit" (prefijo #tienda y .tn-). Reutiliza .shop/.tabs/.tab/.cards/.card de h4ndle.css */
+#tienda .tn-kit{position:relative;isolation:isolate;overflow:hidden;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,440px);align-items:center;gap:clamp(22px,3.5vw,48px);padding:clamp(22px,3.4vw,42px);margin-bottom:clamp(30px,4vw,46px);border-radius:26px;background:var(--deep);color:var(--paper);box-shadow:0 40px 80px -48px rgba(8,26,69,.7);transition:opacity .9s var(--ease-out),transform .9s var(--ease-out),box-shadow .5s var(--ease-out)}
+#tienda .tn-kit::before{content:"";position:absolute;z-index:-1;width:560px;height:560px;right:-160px;top:-240px;border-radius:50%;background:radial-gradient(circle,rgba(0,123,232,.4),rgba(0,123,232,0) 66%);pointer-events:none}
+#tienda .tn-kit-t{font-size:clamp(1.6rem,2.6vw,2.35rem);color:#fff;max-width:16ch}
+#tienda .tn-kit-sub{margin:12px 0 0;color:var(--paper-2);font-size:clamp(1rem,1.15vw,1.1rem);max-width:44ch}
+#tienda .tn-kit-sub b{color:#fff;font-weight:600}
+#tienda .tn-kit-status{display:flex;align-items:center;gap:10px;margin:24px 0 12px;font-family:var(--f-display);font-stretch:125%;font-weight:800;font-size:clamp(1.05rem,1.4vw,1.25rem);line-height:1.25;color:#fff}
+#tienda .tn-ok{display:none;flex:none;width:24px;height:24px;fill:none;stroke:#8CC4FF;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+#tienda .tn-kit-bar{max-width:420px;height:8px;border-radius:999px;background:var(--line-dark);overflow:hidden}
+#tienda .tn-kit-bar i{display:block;width:100%;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--accent),#8CC4FF);transform-origin:left;transform:scaleX(var(--kp,0));transition:transform .7s var(--ease-out)}
+#tienda .tn-kit-hint{margin:12px 0 0;color:var(--paper-2);font-size:.86rem;line-height:1.45}
+#tienda .tn-kit.done{box-shadow:0 0 0 3px var(--accent),0 40px 80px -48px rgba(8,26,69,.7)}
+#tienda .tn-kit.done .tn-kit-status{color:#8CC4FF}
+#tienda .tn-kit.done .tn-ok{display:block}
+#tienda .tn-kit-slots{list-style:none;margin:0;padding:0;width:100%;max-width:440px;justify-self:end;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(10px,1.4vw,16px)}
+#tienda .tn-slot{display:flex;flex-direction:column;gap:8px;min-width:0}
+#tienda .tn-slot-ph{position:relative;display:grid;place-items:center;aspect-ratio:1;border-radius:18px;border:1.5px dashed rgba(169,187,224,.5);background:rgba(255,255,255,.04);overflow:hidden}
+#tienda .tn-slot-ph svg{width:26%;height:auto;color:rgba(169,187,224,.55)}
+#tienda .tn-slot-ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#tienda .tn-slot-ph i{position:absolute;top:8px;left:8px;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-family:var(--f-mono);font-size:.68rem;font-weight:500;background:rgba(8,26,69,.78);color:var(--paper);border:1px solid var(--line-dark)}
+#tienda .tn-slot.full .tn-slot-ph{border:2px solid var(--accent);background:#E9EEF8}
+#tienda .tn-slot.full .tn-slot-ph i{background:var(--accent);border-color:var(--accent);color:#fff}
+#tienda .tn-slot-name{font-size:.82rem;line-height:1.3;color:var(--paper-2);text-align:center;overflow-wrap:anywhere}
+#tienda .tn-slot.full .tn-slot-name{color:#fff;font-weight:600}
+@media (prefers-reduced-motion:no-preference){#tienda .tn-slot.full .tn-slot-ph{animation:tnPop .6s var(--ease-out)}}
+@keyframes tnPop{0%{transform:scale(.86)}60%{transform:scale(1.04)}100%{transform:none}}
+#tienda .tn-tools{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px;margin-bottom:14px}
+#tienda .tn-search{position:relative;flex:1 1 260px;max-width:380px}
+#tienda .tn-search svg{position:absolute;left:17px;top:50%;width:18px;height:18px;transform:translateY(-50%);fill:none;stroke:var(--ink-2);stroke-width:2.2;stroke-linecap:round;pointer-events:none}
+#tienda .tn-search input{width:100%;min-height:46px;padding:0 16px 0 46px;border-radius:999px;border:1.5px solid var(--line-strong);background:#fff;color:var(--ink);font:inherit;font-size:1rem;-webkit-appearance:none;appearance:none;transition:border-color .3s}
+#tienda .tn-search input::placeholder{color:var(--ink-2);opacity:.85}
+#tienda .tn-search input:hover{border-color:var(--ink)}
+#tienda .tn-search input:focus-visible{border-color:var(--accent);border-radius:999px}
+#tienda .tn-tools .tabs{margin:0}
+#tienda .tab{white-space:nowrap}
+#tienda .tab[hidden]{display:none}
+#tienda .tn-count{margin:0 0 18px;color:var(--ink-2)}
+#tienda .cards{grid-template-columns:repeat(4,minmax(0,1fr))}
+#tienda .tn-group{grid-column:1/-1;display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 12px;margin:0;font-size:1rem;line-height:1.3}
+#tienda .tn-group svg{width:14px;height:15px;flex:none;align-self:center;color:var(--accent)}
+#tienda .tn-group b{font-family:var(--f-display);font-stretch:125%;font-weight:800;font-size:clamp(1.12rem,1.5vw,1.32rem);color:var(--ink)}
+#tienda .tn-group span{color:var(--ink-2);font-size:.92rem;font-weight:400}
+#tienda .tn-group~.tn-group{margin-top:clamp(14px,2.4vw,28px);padding-top:clamp(18px,2.6vw,30px);border-top:1px solid var(--line)}
+#tienda .tn-group.hide{display:none}
+#tienda .card .ph{position:relative}
+#tienda .card .price{flex-wrap:wrap;gap:2px 8px}
+#tienda .card .vol{margin-bottom:4px}
+#tienda .card .eta{margin:0 0 14px;color:var(--royal);font-size:.84rem;font-weight:600;line-height:1.35}
+#tienda .tn-badge{position:absolute;top:12px;left:12px;display:none;align-items:center;gap:6px;padding:5px 11px 5px 8px;border-radius:999px;background:var(--accent-btn);color:#fff;font-size:.78rem;font-weight:600;line-height:1.4;box-shadow:0 6px 16px -8px rgba(8,26,69,.6)}
+#tienda .tn-badge svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+#tienda .card.in-kit{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-muted)}
+#tienda .card.in-kit .tn-badge{display:inline-flex}
+#tienda .tn-empty{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;padding:clamp(28px,5vw,48px) 20px;border:1.5px dashed var(--line-strong);border-radius:22px;background:#fff}
+#tienda .tn-empty[hidden]{display:none}
+#tienda .tn-eta-note{margin-top:8px;font-size:.84rem}
+#tienda .tn-eta-note a{color:var(--royal);font-weight:600;text-underline-offset:3px}
+#tienda .tn-empty p{margin:0}
+#tienda .tn-empty-t{font-weight:600;color:var(--ink);overflow-wrap:anywhere}
+#tienda .tn-empty-s{color:var(--ink-2);font-size:.92rem}
+#tienda .tn-empty .btn{margin-top:12px}
+@media (max-width:1080px){#tienda .cards{gap:14px}}
+@media (max-width:960px){#tienda .cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:860px){#tienda .tn-kit{grid-template-columns:1fr}#tienda .tn-kit-slots{justify-self:start}}
+@media (max-width:760px){
+  #tienda .cards{gap:12px}
+  #tienda .tn-search{max-width:none;flex-basis:100%}
+  #tienda .tn-tools .tabs{flex:1 1 100%;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-block:-4px;margin-inline:calc(-1*var(--gutter));padding:7px var(--gutter);scroll-padding-inline:var(--gutter)}
+  #tienda .tn-tools .tabs::-webkit-scrollbar{display:none}
+  #tienda .tab{flex:none}
+}
+@media (max-width:420px){
+  #tienda .cards{grid-template-columns:1fr}
+  #tienda .card{flex-direction:row;align-items:flex-start}
+  #tienda .card .ph{flex:0 0 36%;margin:12px 0 12px 12px;border-radius:14px}
+  #tienda .card .body{min-width:0;padding:12px 14px 14px}
+  #tienda .card .spec{margin-bottom:10px;font-size:.86rem}
+  #tienda .tn-badge{top:6px;left:6px;padding:3px 8px 3px 6px;font-size:.7rem}
+  #tienda .tn-slot-ph i{top:6px;left:6px;width:22px;height:22px}
+}
+</style>
+<section class="shop" id="tienda" data-tone="light" aria-labelledby="sh-t">
+  <div class="wrap">
+    <div class="head rv">
+      <div>
+        <p class="kicker"><svg aria-hidden="true"><use href="#four"/></svg>Tienda</p>
+        <h2 class="display h2" id="sh-t">Empieza desde 50 piezas.</h2>
+      </div>
+      <p class="lede">El precio ya está aquí. Entre más pides, menos pagas por pieza.</p>
+    </div>
+    <div class="tn-kit rv" id="kit">
+      <div class="tn-kit-copy">
+        <h3 class="display tn-kit-t" id="kit-t">Arma el kit de tu marca.</h3>
+        <p class="tn-kit-sub">Elige 3 empaques distintos y llévate <b>{{ kit_bono | escape }}</b> de regalo.</p>
+        <p class="tn-kit-status"><svg class="tn-ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span id="kitMsg" aria-live="polite">Te faltan 3 para tu regalo.</span></p>
+        <div class="tn-kit-bar" aria-hidden="true"><i></i></div>
+        <p class="tn-kit-hint">Usa “Agregar 50 pzas” en cualquier empaque de abajo y se suma a tu kit.</p>
+      </div>
+      <ol class="tn-kit-slots" id="kitSlots" aria-label="Empaques de tu kit" data-key="">
+        {%- for i in (1..3) -%}
+        <li class="tn-slot"><span class="tn-slot-ph"><svg viewBox="0 0 264.45 279.85" aria-hidden="true"><use href="#four"/></svg><i aria-hidden="true">{{ i }}</i></span><span class="tn-slot-name">Empaque {{ i }}<span class="sr-only">, por elegir</span></span></li>
+        {%- endfor -%}
+      </ol>
+    </div>
+    <div class="tn-tools">
+      <div class="tn-search" role="search">
+        <label class="sr-only" for="shopQ">Buscar empaque por nombre, uso o categoría</label>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5l5 5"/></svg>
+        <input type="search" id="shopQ" placeholder="Busca: hamburguesa, postre, sushi…" autocomplete="off" spellcheck="false" enterkeyhint="search" aria-controls="cards">
+      </div>
+      <div class="tabs" role="tablist" aria-label="Categorías" id="tabs">
+        <button class="tab" role="tab" aria-selected="true" aria-controls="cards" data-cat="all" type="button">Todos</button>
+        <button class="tab" role="tab" aria-selected="false" aria-controls="cards" data-cat="fastfood" type="button" tabindex="-1">Fast Food</button>
+        {%- comment -%} Pestaña "Pizza": oculta por pedido del cliente (10-oct), la caja para pizza ahora sale en Fast Food. No se borró: para volver a mostrarla pon SPLIT_PIZZA=true en assets/h4ndle-landing.js (el script le quita el hidden). {%- endcomment %}
+        <button class="tab" role="tab" aria-selected="false" aria-controls="cards" data-cat="pizza" type="button" tabindex="-1" hidden>Pizza</button>
+        <button class="tab" role="tab" aria-selected="false" aria-controls="cards" data-cat="sushi" type="button" tabindex="-1">Asian &amp; Sushi</button>
+        <button class="tab" role="tab" aria-selected="false" aria-controls="cards" data-cat="bakery" type="button" tabindex="-1">Bakery &amp; Desserts</button>
+        <button class="tab" role="tab" aria-selected="false" aria-controls="cards" data-cat="innovadores" type="button" tabindex="-1">Innovadores</button>
+      </div>
+    </div>
+    <p class="tn-count mono" id="shopCount" role="status">8 empaques</p>
+    <div class="cards" id="cards" role="tabpanel" aria-label="Productos" data-stagger></div>
+    <div class="tn-empty" id="shopEmpty" hidden>
+      <p class="tn-empty-t" id="shopEmptyMsg">No encontramos empaques con esa búsqueda.</p>
+      <p class="tn-empty-s">Prueba con otra palabra, como hamburguesa o postre, o mira todo el catálogo.</p>
+      <button class="btn sm" type="button" id="shopClear">Limpiar filtros</button>
+    </div>
+    <p class="shop-note">Todos los precios son por pieza, en pesos mexicanos, con tu marca impresa. El diseño va incluido.</p>
+    <p class="shop-note tn-eta-note">*Entrega en 4 días hábiles en Ciudad de México y área metropolitana. <a href="#garantia">Ver condiciones de la garantía</a>.</p>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "H4 · Tienda",
+  "settings": [
+    {
+      "type": "text",
+      "id": "kit_bono",
+      "label": "Regalo del kit de marca",
+      "default": "30% de descuento",
+      "info": "Completa la frase: Elige 3 empaques distintos y llévate ___ de regalo. El descuento real lo aplica el código del paquete en la configuración del tema."
+    }
+  ],
+  "enabled_on": {
+    "templates": [
+      "index"
+    ]
+  }
+}
+{% endschema %}

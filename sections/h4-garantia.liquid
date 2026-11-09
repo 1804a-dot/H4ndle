@@ -1,0 +1,151 @@
+<!-- ============ GARANTÍA ============ -->
+<style>
+/* H4 · Garantía — titular en dos líneas, frase destacada y separación real entre el 4, los días y el texto (prefijo #garantia) */
+#garantia .h2{max-width:none;font-size:clamp(1.3rem,2.05vw,1.95rem)}
+#garantia .lede{max-width:none;margin-top:22px}
+#garantia .lede b{display:block;color:#fff;font-family:var(--f-display);font-stretch:125%;font-weight:800;font-size:clamp(1.3rem,2vw,1.75rem);line-height:1.1;letter-spacing:-.012em;margin-bottom:6px}
+/* Dos columnas con ancho propio: el 4 y la lista de días viven dentro de la columna izquierda y nunca pasan a la del texto.
+   El alto del 4 se calcula con el ancho real de su columna (container query), así que se achica solo si falta espacio. */
+#garantia .grid{grid-template-columns:minmax(0,1fr) minmax(0,clamp(300px,36vw,500px));gap:clamp(32px,4.4vw,60px)}
+#garantia .grid>div:last-child{min-width:0}
+#garantia .fourrow{container-type:inline-size;width:100%;min-width:0;justify-self:stretch;--fg:clamp(14px,2vw,26px);--dw:clamp(164px,calc(100cqw - 400px),254px);gap:var(--fg)}
+#garantia .four{height:min(60vh,500px,26vw);height:min(60vh,500px,calc((100cqw - var(--fg) - var(--dw))*1.0584))}
+#garantia .days{flex:0 0 var(--dw);min-width:0;gap:8px}
+#garantia .days li{white-space:normal;line-height:1.25}
+#garantia .days li b{flex:none;white-space:nowrap}
+@media (max-width:860px){
+  #garantia .grid{grid-template-columns:minmax(0,1fr);gap:26px}
+  #garantia .h2{font-size:clamp(1.3rem,5.6vw,2.3rem)}
+  #garantia .fourrow{--dw:clamp(160px,calc(100cqw - 180px),254px)}
+  #garantia .four{height:min(30vh,210px,40vw);height:min(30vh,210px,calc((100cqw - var(--fg) - var(--dw))*1.0584))}
+  #garantia .days li{gap:8px}
+  #garantia .days li b{padding:5px 8px;font-size:.64rem}
+}
+/* Celular en horizontal (poca altura): vuelve a dos columnas y baja el tamaño para que nada se corte ni se pegue */
+@media (max-width:860px) and (max-height:540px){
+  #garantia .grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px}
+  #garantia .stage{padding-top:52px}
+  #garantia .fourrow{--dw:clamp(150px,calc(100cqw - 150px),254px)}
+  #garantia .four{height:min(56vh,calc((100cqw - var(--fg) - var(--dw))*1.0584))}
+  #garantia .h2{font-size:clamp(1rem,3.3vw,1.4rem)}
+  #garantia .lede{margin-top:12px}
+  #garantia .lede b{font-size:1.1rem}
+  #garantia .kicker{margin-bottom:10px}
+  #garantia .star{margin-top:10px}
+}
+
+/* Banda "Todo lo que necesitas." — compacta (alrededor de un cuarto de pantalla), sobre el mismo azul royal.
+   Izquierda: titular + nota. Derecha: caja con 4 datos y debajo 3 ideas. En pantallas chicas se apila. */
+#garantia .gband{position:relative;padding:clamp(20px,2.2vw,34px) 0 clamp(28px,3vw,44px)}
+/* el escenario fijo deja aire vacío bajo el 4; la banda sube un poco para sentirse parte de la misma pantalla */
+@media (min-height:640px){#garantia .gband{margin-top:calc(-1*clamp(24px,9vh,96px))}}
+#garantia .gb{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.62fr);grid-template-areas:"l c" "l i";column-gap:clamp(28px,4.6vw,76px);row-gap:clamp(14px,1.4vw,20px);align-items:start}
+#garantia .gb-left{grid-area:l;display:flex;flex-direction:column;gap:clamp(14px,1.4vw,20px)}
+#garantia .gb-t{margin:0;font-size:clamp(1.4rem,2.1vw,1.9rem);line-height:1.08;color:#fff}
+#garantia .gb-t span{display:block;color:#8CC4FF}
+#garantia .gb-note{margin:0;max-width:44ch;font-family:var(--f-mono);font-size:.78rem;line-height:1.65;color:#BFD3FF}
+#garantia .gb-cells{grid-area:c;list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:rgba(255,255,255,.28);border:1px solid rgba(255,255,255,.28);border-radius:20px;overflow:hidden}
+#garantia .gb-cells li{min-width:0;padding:13px 15px 15px;background:var(--royal)}
+#garantia .gb-cells b{display:block;font-family:var(--f-display);font-stretch:125%;font-weight:800;font-size:clamp(.9rem,1.08vw,1.05rem);line-height:1.15;letter-spacing:-.01em;color:#fff}
+#garantia .gb-cells span{display:block;margin-top:4px;font-size:.88rem;line-height:1.35;color:#D6E3FF}
+#garantia .gb-items{grid-area:i;list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(16px,2.2vw,32px)}
+#garantia .gb-items b{display:block;font-family:var(--f-display);font-stretch:125%;font-weight:700;font-size:.9rem;line-height:1.2;color:#fff}
+#garantia .gb-items span{display:block;margin-top:4px;font-size:.88rem;line-height:1.4;color:#D6E3FF}
+@media (max-width:980px){
+  #garantia .gb{grid-template-columns:minmax(0,1fr);grid-template-areas:"t" "c" "n" "i";row-gap:18px}
+  #garantia .gb-left{display:contents}
+  #garantia .gb-t{grid-area:t;font-size:clamp(1.5rem,5vw,2.3rem)}
+  #garantia .gb-note{grid-area:n}
+}
+@media (max-width:640px){
+  #garantia .gb-cells{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #garantia .gb-cells li{padding:14px 14px 16px}
+  #garantia .gb-items{grid-template-columns:minmax(0,1fr);gap:14px}
+}
+</style>
+<section class="guar" id="garantia" data-tone="dark" aria-labelledby="g-t">
+  <div class="pin" id="guarPin">
+    <div class="stage">
+      <div class="wrap grid">
+        <div class="fourrow">
+        <div class="four" aria-hidden="true">
+          <svg class="ghost" viewBox="0 0 264.45 279.85"><path fill-rule="evenodd" d="M185.25 185.57C185.25 192.67 180.68 198.4 175.07 198.34C160.02 198.19 131.48 198.36 111.51 198.52C102.58 198.59 97.54 185.61 103.02 176.69L153.13 95.06C163.62 77.98 185.25 87.36 185.25 108.99L185.25 185.57M264.45 13.78C264.45 6.17 258.28 0 250.67 0L150.22 0C145.67 0 141.42 2.25 138.85 6L8.84 196.22C0 209.16 9.27 226.72 24.94 226.72L138.04 226.72C147.47 226.72 155.55 233.47 157.23 242.75L161.02 263.73C162.71 273.08 170.86 279.85 180.35 279.77C199.55 279.6 231.07 279.37 249.58 279.47C257.79 279.52 264.45 272.88 264.45 264.67L264.45 13.78"/></svg>
+          <div class="fillwrap"><svg viewBox="0 0 264.45 279.85"><use href="#four"/></svg></div>
+        </div>
+          <ol class="days" aria-label="Los 4 días de tu pedido">
+            <li><b>Día 1</b>Confirmamos tu arte</li>
+            <li><b>Día 2</b>Producimos</li>
+            <li><b>Día 3</b>Revisamos y empacamos</li>
+            <li><b>Día 4</b>Llega a tu negocio</li>
+          </ol>
+        </div>
+        <div>
+          <p class="kicker"><svg aria-hidden="true"><use href="#four"/></svg>La garantía H4NDLE</p>
+          <h2 class="display h2" id="g-t">No prometemos fechas.<br>Garantizamos tu entrega.*</h2>
+          <p class="lede"><b>4 días, no 30.</b>Si no llega, H4NDLE lo paga.</p>
+          <p class="star">*Aplica en CDMX y área metropolitana.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="gband">
+    <div class="wrap gb">
+      <div class="gb-left rv">
+        <h3 class="display gb-t" id="gb-t">Todo lo que necesitas.<span>Nada de lo que no.</span></h3>
+        <p class="gb-note">*4 días hábiles en CDMX y área metropolitana. 7 días naturales al resto del país.</p>
+      </div>
+      <ul class="gb-cells" data-stagger>
+        <li><b>Diseño incluido</b><span>Sin costo aparte.</span></li>
+        <li><b>50 a 5,000 piezas</b><span>Sin mínimos de fábrica.</span></li>
+        <li><b>4 días CDMX*</b><span>O es gratis.</span></li>
+        <li><b>7 días nacional*</b><span>A cualquier estado.</span></li>
+      </ul>
+      <ul class="gb-items" data-stagger>
+        <li><b>Compra menos. Repón fácil.</b><span>No llenes tu cocina de cajas que todavía no necesitas.</span></li>
+        <li><b>Siempre acompañado.</b><span>Una persona real sigue tu pedido de principio a fin.</span></li>
+        <li><b>Listo o personalizado.</b><span>Elige un diseño listo y compra al instante, o hacemos el tuyo.</span></li>
+      </ul>
+    </div>
+  </div>
+
+  {%- comment -%}
+    OCULTO por pedido del cliente (10-oct-2026), no borrado: caja de condiciones (Productos / Cantidades / Zonas / Horario / Cómo se cuenta / Si no llega a tiempo),
+    nota "Página de prueba…", foto de la cocina y las 3 tarjetas (50 a 5,000 piezas, 24/7, Upgrades sorpresa).
+    Para volver a mostrarlos: borra la línea de apertura y la línea de cierre de este bloque de comentario de Liquid (el CSS .terms / .offer / .stats sigue en assets/h4ndle.css).
+  <div class="terms" role="group" aria-label="Condiciones de la garantía de 4 días">
+    <div class="wrap">
+      <div class="box" data-stagger>
+        <div><h3>Productos</h3><p>Todo el catálogo de esta tienda, con tu marca impresa.</p></div>
+        <div><h3>Cantidades</h3><p>De 50 a 5,000 piezas por pedido.</p></div>
+        <div><h3>Zonas</h3><p>Ciudad de México y área metropolitana.</p></div>
+        <div><h3>Horario</h3><p>Diseños aprobados de lunes a viernes antes de las 2:00 p.m.</p></div>
+        <div><h3>Cómo se cuenta</h3><p>4 días hábiles a partir de que apruebas tu diseño.</p></div>
+        <div><h3>Si no llega a tiempo</h3><p>Te devolvemos el total de tu pedido.</p></div>
+      </div>
+      <p class="demo">Página de prueba: estas condiciones son de ejemplo y se confirman antes del lanzamiento.</p>
+
+      <div class="offer">
+        <figure class="rv"><img src="{{ 'kitchen.jpg' | asset_url }}" width="1920" height="1080" loading="lazy" decoding="async" alt="Bolsas y cajas de papel azules con dibujos blancos listas para salir sobre la barra de una cocina de entregas"><figcaption>Hecho para cocinas que no paran.</figcaption></figure>
+        <ul class="stats" data-stagger>
+          <li><b>50 a 5,000 piezas</b><span>por pedido. No compres lo que no necesitas: repón cuando las necesites y deja tu capital trabajando en tu negocio, no guardado en cajas.</span></li>
+          <li><b>24/7</b><span>atención. Siempre hay alguien que te responde.</span></li>
+          <li><b>Upgrades sorpresa</b><span>Detalles extra en tus envíos, como agradecimiento.</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  {%- endcomment -%}
+</section>
+
+{% schema %}
+{
+  "name": "H4 · Garantía",
+  "settings": [],
+  "enabled_on": {
+    "templates": [
+      "index"
+    ]
+  }
+}
+{% endschema %}

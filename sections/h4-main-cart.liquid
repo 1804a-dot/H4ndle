@@ -1,0 +1,164 @@
+{%- comment -%} H4 · Carrito. Formulario server-rendered; funciona sin JS (updates[key] + name="checkout").
+  Con JS, los cambios de cantidad pasan por H4Cart para mover cada línea a la variante de su tramo de volumen. {%- endcomment -%}
+{%- capture cart_pairs -%}{%- for item in cart.items -%}{{ item.key }}:{{ item.quantity }},{%- endfor -%}{%- endcapture -%}
+<section class="st-section" id="st-cart" data-tone="light" aria-labelledby="st-cart-title" data-cart-sig="{{ cart_pairs | escape }}" data-cart-total="{{ cart.total_price }}">
+  <div class="wrap">
+    <div class="st-head">
+      <p class="kicker"><svg aria-hidden="true"><use href="#four"/></svg>Carrito</p>
+      <h1 class="display h2" id="st-cart-title">Tu carrito</h1>
+    </div>
+
+    {%- if cart.item_count == 0 -%}
+    <div class="st-empty">
+      <p class="lede">Tu carrito está vacío.</p>
+      <a class="btn" href="{{ routes.root_url }}#tienda">Ver productos</a>
+    </div>
+    {%- else -%}
+    <form action="{{ routes.cart_url }}" method="post" id="st-cart-form" novalidate>
+      <div class="st-cart-grid">
+        <div>
+          <ul class="st-cart-list">
+            {%- for item in cart.items -%}
+            {%- assign is_tier_item = false -%}
+            {%- if item.product.variants.size == 3 -%}{%- assign is_tier_item = true -%}{%- endif -%}
+            {%- assign props = item.properties -%}
+            <li class="st-cart-row">
+              <a href="{{ item.url }}" tabindex="-1" aria-hidden="true">
+                {%- if item.image -%}
+                <img src="{{ item.image | image_url: width: 176 }}" width="88" height="88" alt="" loading="lazy">
+                {%- endif -%}
+              </a>
+              <div>
+                <div class="st-cart-top">
+                  <h3><a href="{{ item.url }}">{{ item.product.title }}</a></h3>
+                  <span class="st-cart-amt">{{ item.original_line_price | money }}</span>
+                </div>
+                <div class="st-cart-meta">
+                  {%- unless item.product.has_only_default_variant -%}
+                  <div>{{ item.variant.title }}</div>
+                  {%- endunless -%}
+                  {%- if props['Marca'] != blank -%}
+                  <div>Marca: {{ props['Marca'] | escape }}{% if props['Color'] != blank %} · {{ props['Color'] | escape }}{% endif %}{% if props['Estilo'] != blank %} · {{ props['Estilo'] | escape }}{% endif %}</div>
+                    {%- if props['Logo'] != blank and props['Logo'] != 'Sin logo' -%}
+                    <div>Logo: {% if props['Logo'] contains '://' %}{{ props['Logo'] | split: '/' | last | split: '?' | first | url_decode | escape }}{% else %}{{ props['Logo'] | escape }}{% endif %}</div>
+                    {%- endif -%}
+                  {%- endif -%}
+                  {%- for prop in props -%}
+                    {%- assign p_key = prop[0] -%}
+                    {%- assign p_val = prop[1] -%}
+                    {%- assign p_key_first = p_key | slice: 0, 1 -%}
+                    {%- if p_val == blank or p_key_first == '_' -%}{%- continue -%}{%- endif -%}
+                    {%- case p_key -%}
+                      {%- when 'Marca', 'Color', 'Estilo', 'Logo', 'Color HEX' -%}{%- continue -%}
+                    {%- endcase -%}
+                    <div>{{ p_key | escape }}: {% if p_val contains '://' %}{{ p_val | split: '/' | last | split: '?' | first | url_decode | escape }}{% else %}{{ p_val | escape }}{% endif %}</div>
+                  {%- endfor -%}
+                </div>
+                <p class="st-cart-unit">{{ item.original_price | money }} c/u</p>
+                {%- if item.total_discount > 0 -%}
+                <p class="st-cart-line-discount">−{{ item.total_discount | money }} de descuento</p>
+                {%- endif -%}
+                <div class="st-cart-qty">
+                  <label for="st-updates-{{ forloop.index0 }}">Cantidad</label>
+                  {%- if is_tier_item -%}
+                  <input type="number" id="st-updates-{{ forloop.index0 }}" name="updates[{{ item.key }}]" value="{{ item.quantity }}" min="50" max="5000" step="50" inputmode="numeric" data-key="{{ item.key }}" data-qty="{{ item.quantity }}" data-tier>
+                  {%- else -%}
+                  <input type="number" id="st-updates-{{ forloop.index0 }}" name="updates[{{ item.key }}]" value="{{ item.quantity }}" min="0" step="1" inputmode="numeric" data-key="{{ item.key }}" data-qty="{{ item.quantity }}">
+                  {%- endif -%}
+                  <a class="st-cart-remove" href="{{ item.url_to_remove }}">Quitar</a>
+                </div>
+              </div>
+            </li>
+            {%- endfor -%}
+          </ul>
+
+          <div class="st-cart-foot">
+            <button type="submit" class="st-cart-update">Actualizar</button>
+            <a class="st-sm-link" href="{{ routes.root_url }}#tienda">Seguir comprando</a>
+          </div>
+        </div>
+
+        <div class="st-cart-summary">
+          <h2>Resumen</h2>
+          <div class="row"><span>Subtotal</span><span>{{ cart.original_total_price | money }}</span></div>
+          {%- if cart.total_discount > 0 -%}
+          {%- assign bundle_applied = false -%}
+          {%- assign bundle_code = settings.h4_bundle_code | strip | upcase -%}
+          {%- for code in cart.discount_codes -%}
+            {%- assign code_up = code.code | strip | upcase -%}
+            {%- if code.applicable and bundle_code != blank and code_up == bundle_code -%}
+              {%- assign bundle_applied = true -%}
+            {%- endif -%}
+          {%- endfor -%}
+          <div class="row disc">
+            <span>{%- if bundle_applied -%}Paquete de 3 (−{{ settings.h4_bundle_percent | default: 30 }}%){%- else -%}Descuento{%- endif -%}</span>
+            <span>−{{ cart.total_discount | money }}</span>
+          </div>
+          {%- endif -%}
+          <div class="row tot"><span>Total</span><span>{{ cart.total_price | money }}</span></div>
+          <p class="ship">
+            {%- assign free_shipping_cents = settings.h4_free_shipping | default: 2500 | times: 100 -%}
+            {%- if cart.total_price >= free_shipping_cents -%}
+              Tu envío es gratis.
+            {%- else -%}
+              {%- assign remaining = free_shipping_cents | minus: cart.total_price -%}
+              Te faltan {{ remaining | money }} para el envío gratis.
+            {%- endif -%}
+          </p>
+          <button type="submit" name="checkout" class="btn">Ir a pagar</button>
+        </div>
+      </div>
+    </form>
+    {%- endif -%}
+  </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  var sec=document.getElementById('st-cart'),Cart=window.H4Cart;
+  if(!sec||!Cart)return;
+  var KEY='h4-cart-sync',busy=false,MAXQ=(window.H4&&window.H4.MAXQ)||5000;
+  var norm=function(s){return String(s||'').split(',').filter(Boolean).sort().join(',')};
+  var sig=norm(sec.getAttribute('data-cart-sig'))+'|'+(sec.getAttribute('data-cart-total')||'0');
+  var sigOf=function(c){return norm(((c&&c.items)||[]).map(function(i){return i.key+':'+i.quantity}).join(','))+'|'+(c?c.total_price:0)};
+  var tries=function(n){try{if(n===undefined)return +sessionStorage.getItem(KEY)||0;if(n)sessionStorage.setItem(KEY,n);else sessionStorage.removeItem(KEY)}catch(e){return 0}};
+  /* the page comes from the server: if the cart changed afterwards (volume tier, bundle code, drawer), show the real one */
+  var check=function(c){
+    if(!c||busy)return;
+    if(sigOf(c)===sig){tries(0);return}
+    var n=tries();if(n<2){tries(n+1);busy=true;location.reload()}
+  };
+  document.addEventListener('h4:cart',function(e){check(e.detail&&e.detail.cart)});
+  if(Cart.state)check(Cart.state);
+
+  var form=document.getElementById('st-cart-form');if(!form)return;
+  var last=null;
+  form.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('button[type="submit"]');if(b)last=b});
+  form.addEventListener('submit',function(e){
+    e.preventDefault();if(busy)return;busy=true;
+    var sub=e.submitter||last,toCheckout=!!(sub&&sub.name==='checkout');
+    [].forEach.call(form.querySelectorAll('button'),function(b){b.disabled=true});
+    var run=Promise.resolve();
+    [].forEach.call(form.querySelectorAll('input[data-key]'),function(inp){
+      var was=+inp.getAttribute('data-qty'),q=parseInt(inp.value,10);
+      if(isNaN(q))q=was;
+      if(inp.hasAttribute('data-tier'))q=q<=0?0:Math.min(MAXQ,Math.max(50,Math.round(q/50)*50)); /* 50 a 5,000 piezas por línea */
+      else q=Math.max(0,q);
+      if(q!==was)run=run.then(function(){return Cart.change(inp.getAttribute('data-key'),q)});
+    });
+    var root={{ routes.root_url | json }};
+    run.then(function(){return toCheckout?Cart.refresh():null}).then(function(){
+      tries(0);
+      if(toCheckout)location.href=String(root||'/').replace(/\/?$/,'/')+'checkout';
+      else location.reload();
+    },function(){tries(0);location.reload()});
+  });
+});
+</script>
+
+{% schema %}
+{
+  "name": "H4 · Carrito",
+  "settings": []
+}
+{% endschema %}

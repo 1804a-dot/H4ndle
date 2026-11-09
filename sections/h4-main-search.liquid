@@ -1,0 +1,95 @@
+{%- comment -%} H4 · Búsqueda — tarjetas de producto + lista simple para páginas/artículos {%- endcomment -%}
+<section class="st-section" data-tone="light" aria-labelledby="st-search-title">
+  <div class="wrap">
+    <div class="st-head">
+      <p class="kicker"><svg aria-hidden="true"><use href="#four"/></svg>{{ 'general.search.title' | t }}</p>
+      <h1 class="display h2" id="st-search-title">{{ 'general.search.title' | t }}</h1>
+    </div>
+
+    <form class="st-search-form" action="{{ routes.search_url }}" method="get" role="search">
+      <label class="sr-only" for="st-search-input">{{ 'general.search.placeholder' | t }}</label>
+      <input type="search" name="q" id="st-search-input" value="{{ search.terms | escape }}" placeholder="{{ 'general.search.placeholder' | t }}" autocomplete="off">
+      <button type="submit" class="btn sm">{{ 'general.search.submit' | t }}</button>
+    </form>
+
+    {%- if search.performed -%}
+      {%- paginate search.results by 24 -%}
+        {%- if search.results_count == 0 -%}
+        <p class="st-search-meta">{{ 'general.search.no_results_html' | t: terms: search.terms }}</p>
+        {%- else -%}
+        <p class="st-search-meta">{{ 'general.search.results_count' | t: count: search.results_count, terms: search.terms }}</p>
+
+        {%- assign has_products = false -%}
+        {%- for result in search.results -%}
+          {%- if result.object_type == 'product' -%}{%- assign has_products = true -%}{%- endif -%}
+        {%- endfor -%}
+
+        {%- if has_products -%}
+        <p class="st-search-subhead">{{ 'general.search.results_for_products' | t }}</p>
+        <div class="cards" data-stagger>
+          {%- for result in search.results -%}
+            {%- if result.object_type == 'product' -%}
+            <article class="card" style="--i:{{ forloop.index0 }}">
+              <a class="st-card-link" href="{{ result.url }}" tabindex="-1" aria-hidden="true">
+                <div class="ph">
+                  {%- if result.featured_image -%}
+                  <img src="{{ result.featured_image | image_url: width: 900 }}" width="900" height="900" loading="lazy" alt="">
+                  {%- endif -%}
+                </div>
+              </a>
+              <div class="body">
+                <p class="cat mono">{{ result.type | default: 'Empaque de marca' }}</p>
+                <h3><a href="{{ result.url }}">{{ result.title }}</a></h3>
+                <p class="spec">{{ result.description | strip_html | truncatewords: 14 }}</p>
+                <div class="price"><b>{{ result.variants.first.price | money }}</b><span>c/u · desde 50 pzas</span></div>
+                {%- if result.variants.size == 3 -%}
+                <p class="vol">{{ result.variants.last.price | money }} c/u desde 1,000 pzas</p>
+                {%- endif -%}
+                <div class="acts"><a class="btn sm" href="{{ result.url }}">Ver producto</a></div>
+              </div>
+            </article>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+        {%- endif -%}
+
+        <ul class="st-search-list">
+          {%- for result in search.results -%}
+            {%- unless result.object_type == 'product' -%}
+            <li>
+              <span class="st-search-type">{% if result.object_type == 'article' %}Artículo{% else %}Página{% endif %}</span>
+              <a href="{{ result.url }}">{{ result.title }}</a>
+              {%- if result.content -%}
+              <p class="st-search-excerpt">{{ result.content | strip_html | truncatewords: 20 }}</p>
+              {%- endif -%}
+            </li>
+            {%- endunless -%}
+          {%- endfor -%}
+        </ul>
+        {%- endif -%}
+
+        {%- if paginate.pages > 1 -%}
+        <nav class="st-pagination" aria-label="Paginación">
+          {%- if paginate.previous -%}
+          <a href="{{ paginate.previous.url }}">{{ 'general.pagination.previous' | t }}</a>
+          {%- else -%}
+          <span aria-disabled="true">{{ 'general.pagination.previous' | t }}</span>
+          {%- endif -%}
+          {%- if paginate.next -%}
+          <a href="{{ paginate.next.url }}">{{ 'general.pagination.next' | t }}</a>
+          {%- else -%}
+          <span aria-disabled="true">{{ 'general.pagination.next' | t }}</span>
+          {%- endif -%}
+        </nav>
+        {%- endif -%}
+      {%- endpaginate -%}
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "H4 · Búsqueda",
+  "settings": []
+}
+{% endschema %}

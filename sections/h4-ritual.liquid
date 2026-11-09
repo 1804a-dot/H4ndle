@@ -1,0 +1,68 @@
+<h1 class="sr-only">H4NDLE, empaque de marca para pymes y Dark Kitchens. Tu comida ya tiene calidad. Haz que se note.</h1>
+
+<!-- ============ RITUAL (scroll video: hoy solo la caja de hamburguesa; las demás están apagadas en el script) ============ -->
+<section class="scrub ritual" id="ritual" data-tone="dark" data-video="{{ 'ritual-scrub.mp4' | asset_url }}" data-bytes="3394237" data-poster="{{ 'ritual-poster.jpg' | asset_url }}" data-ending="{{ 'ritual-ending.jpg' | asset_url }}" data-f="0.08" data-loadramp style="--h:280vh" aria-label="El ritual de abrir el pedido">
+  <div class="stage">
+    <div class="poster" aria-hidden="true"></div>
+    <video preload="none" muted playsinline disablepictureinpicture aria-hidden="true" tabindex="-1"></video>
+    <div class="scrim" aria-hidden="true"></div>
+    <div class="band fx-punch" data-a="0" data-b="0.44" data-ramp="0.12" style="--sa:.6">
+      <p class="chip kchip">Empaque para pymes y Dark Kitchens</p>
+      <p class="display" data-split="words" data-em="juzgan.">Primero te juzgan.</p>
+    </div>
+    <div class="band fx-rise" data-a="0.5" data-b="1" data-ramp="0.14" style="--sa:.62">
+      <p class="display" data-split="words">Después te prueban.</p>
+      <p class="lede sub">Antes del primer bocado, tu cliente ya juzgó tu marca por el empaque. Y con esa misma mirada juzga tu cocina y tu comida.</p>
+    </div>
+    <svg class="ring" viewBox="0 0 48 48" aria-hidden="true"><circle class="bg" cx="24" cy="24" r="20" fill="none" stroke-width="3"/><circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-dasharray="126" style="stroke-dashoffset:var(--ld,126)"/></svg>
+    <div class="cue mono" style="bottom:calc(26px + var(--top-h,101px))" aria-hidden="true"><span>Desliza</span><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  </div>
+</section>
+<section class="scrub-static ritual-static" data-tone="dark" aria-label="El ritual de abrir el pedido">
+  <div class="inner">
+    <p class="chip" style="margin:0 0 20px">Empaque para pymes y Dark Kitchens</p>
+    <p class="display">Primero te juzgan. Después te prueban.</p>
+    <p class="lede">Antes del primer bocado, tu cliente ya juzgó tu marca por el empaque. Y con esa misma mirada juzga tu cocina y tu comida.</p>
+  </div>
+</section>
+<style>
+/* Cortes del titular ("Primero te / juzgan." y "Después te / prueban."): h4ndle-landing.js rearma el texto palabra por palabra y descarta cualquier salto br, así que la última palabra baja a su propia línea por CSS. */
+#ritual .band .split .w:last-child{display:block;width:fit-content}
+</style>
+<script>
+/* Solo entran al sorteo las cajas con on:true (hoy solo la hamburguesa); las demás siguen aquí, apagadas: para reactivar una, cambia su on a true. Con más de una activa, cada visita abre una al azar, sin repetir la anterior. Corre antes que h4ndle-landing.js (defer), que lee estos data-* al armar el scroll. */
+(()=>{
+  const all=[
+    {id:'hamburguesa',on:true,video:"{{ 'ritual-scrub.mp4' | asset_url }}",bytes:3394237,poster:"{{ 'ritual-poster.jpg' | asset_url }}",ending:"{{ 'ritual-ending.jpg' | asset_url }}"},
+    {id:'sushi',on:false,video:"{{ 'ritual-sushi-scrub.mp4' | asset_url }}",bytes:2314385,poster:"{{ 'ritual-sushi-poster.jpg' | asset_url }}",ending:"{{ 'ritual-sushi-ending.jpg' | asset_url }}"},
+    {id:'pizza',on:false,video:"{{ 'ritual-pizza-scrub.mp4' | asset_url }}",bytes:2442076,poster:"{{ 'ritual-pizza-poster.jpg' | asset_url }}",ending:"{{ 'ritual-pizza-ending.jpg' | asset_url }}"},
+    {id:'pandulce',on:false,video:"{{ 'ritual-pandulce-scrub.mp4' | asset_url }}",bytes:2254687,poster:"{{ 'ritual-pandulce-poster.jpg' | asset_url }}",ending:"{{ 'ritual-pandulce-ending.jpg' | asset_url }}"},
+    {id:'mexicana',on:false,video:"{{ 'ritual-mexicana-scrub.mp4' | asset_url }}",bytes:3060858,poster:"{{ 'ritual-mexicana-poster.jpg' | asset_url }}",ending:"{{ 'ritual-mexicana-ending.jpg' | asset_url }}"}
+  ];
+  const boxes=all.filter(b=>b.on);
+  const sec=document.getElementById('ritual');if(!sec||!boxes.length)return;
+  const KEY='h4-ritual-caja';
+  let last=-1;try{const s=localStorage.getItem(KEY);if(s!==null)last=boxes.findIndex(b=>b.id===s)}catch(e){}
+  let i=0;
+  if(boxes.length>1){
+    if(last<0)i=Math.floor(Math.random()*boxes.length);
+    else{i=Math.floor(Math.random()*(boxes.length-1));if(i>=last)i++}
+  }
+  const b=boxes[i];
+  try{localStorage.setItem(KEY,b.id)}catch(e){}
+  sec.dataset.video=b.video;sec.dataset.bytes=b.bytes;sec.dataset.poster=b.poster;sec.dataset.ending=b.ending;sec.dataset.caja=b.id;
+  const st=document.querySelector('.ritual-static');if(st)st.style.backgroundImage=`url('${b.ending}')`;
+})();
+</script>
+
+{% schema %}
+{
+  "name": "H4 · Ritual",
+  "settings": [],
+  "enabled_on": {
+    "templates": [
+      "index"
+    ]
+  }
+}
+{% endschema %}

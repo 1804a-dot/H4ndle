@@ -1,0 +1,471 @@
+<!-- ============ TESTIMONIOS ============ -->
+<style>
+/* H4 · Testimonios — carrusel de tarjetas (prefijo tm-) */
+.tm{position:relative;padding:clamp(90px,11vw,160px) 0 clamp(28px,4vw,56px)}
+.tm-head{display:flex;flex-direction:column;align-items:center;text-align:center}
+.tm-head .kicker{justify-content:center}
+.tm-head .h2{max-width:22ch;margin-inline:auto}
+.tm-head .lede{max-width:50ch;margin-inline:auto}
+.tm-stage{position:relative;margin-top:clamp(24px,3.6vw,52px)}
+
+/* pista: scroll-snap nativo, la tarjeta activa queda al centro */
+.tm-track{--tm-w:min(560px,46vw);--tm-gap:clamp(14px,2.2vw,30px);position:relative;display:flex;gap:var(--tm-gap);overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding:34px calc(50% - var(--tm-w)/2) 58px}
+.tm-track::-webkit-scrollbar{display:none}
+.tm-track{transition:opacity .35s var(--ease-out)}
+.tm-track.is-wrap{opacity:0}
+.tm-track:focus-visible{outline:3px solid var(--accent);outline-offset:-4px;border-radius:14px}
+.tm-slide{flex:0 0 var(--tm-w);min-width:0;display:flex;scroll-snap-align:center;scroll-snap-stop:always;-webkit-tap-highlight-color:transparent}
+
+/* tarjeta */
+.tm-card{position:relative;display:flex;flex-direction:column;width:100%;margin:0;padding:clamp(24px,2.6vw,36px);border-radius:26px;background:#fff;border:1px solid var(--line);box-shadow:0 1px 2px rgba(8,26,69,.04);opacity:.55;transform:scale(.92);transition:transform .55s var(--ease-out),opacity .55s var(--ease-out),box-shadow .55s var(--ease-out),background .55s var(--ease-out),border-color .55s var(--ease-out)}
+.tm-slide:not(.is-active) .tm-card{cursor:pointer;transform-origin:right center}
+.tm-slide.is-active ~ .tm-slide .tm-card{transform-origin:left center}
+.tm-slide:not(.is-active) .tm-card:hover{opacity:.8}
+.tm-slide.is-active .tm-card{opacity:1;transform:none;background:linear-gradient(180deg,#F5F9FF 0%,#E8F1FF 100%);border-color:rgba(0,123,232,.24);box-shadow:0 26px 48px -28px rgba(8,26,69,.5),0 10px 22px -12px rgba(19,75,165,.22)}
+.tm-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:12px}
+.tm-qm{font-family:var(--f-display);font-stretch:125%;font-weight:800;font-size:clamp(4.2rem,6vw,5.6rem);line-height:.72;height:.5em;color:var(--royal);user-select:none}
+.tm-stars{display:inline-flex;gap:3px;padding-top:8px;color:var(--accent);font-size:1.2rem;line-height:1}
+.tm-st.is-off{color:rgba(11,22,51,.2)}
+.tm-text{flex:1;margin:0 0 24px;font-size:clamp(1.02rem,1.18vw,1.16rem);line-height:1.6;color:var(--ink)}
+.tm-text p{margin:0}
+.tm-by{display:flex;align-items:center;gap:14px;margin:0;padding-top:20px;border-top:1px solid var(--line)}
+.tm-slide.is-active .tm-by{border-top-color:rgba(19,75,165,.18)}
+.tm-av{flex:none;width:48px;height:48px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent) 0%,var(--royal) 100%);color:#fff;font-family:var(--f-display);font-stretch:125%;font-weight:800;font-size:.92rem;letter-spacing:.02em;box-shadow:0 8px 16px -8px rgba(19,75,165,.65)}
+.tm-av img{width:100%;height:100%;object-fit:cover}
+.tm-who{min-width:0}
+.tm-name{display:block;font-style:normal;font-family:var(--f-display);font-stretch:125%;font-weight:700;font-size:.98rem;line-height:1.25;color:var(--ink)}
+.tm-biz{display:block;margin-top:3px;font-size:.84rem;font-weight:600;line-height:1.35;color:var(--royal)}
+
+/* controles */
+.tm-ctrl{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px 14px}
+.tm-btn{appearance:none;display:grid;place-items:center;width:48px;height:48px;padding:0;border-radius:50%;border:1.5px solid var(--line-strong);background:#fff;color:var(--ink);cursor:pointer;transition:background .3s var(--ease-out),color .3s var(--ease-out),border-color .3s var(--ease-out),opacity .3s var(--ease-out),transform .3s var(--ease-out)}
+.tm-btn svg{width:20px;height:20px}
+.tm-btn:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
+.tm-btn:active{transform:scale(.94)}
+.tm-btn[aria-disabled="true"]{opacity:.38;pointer-events:none}
+.tm-dots{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;min-width:0}
+.tm-dot{appearance:none;display:grid;place-items:center;width:24px;height:32px;padding:0;border:0;background:none;cursor:pointer}
+.tm-dot::before{content:"";display:block;width:8px;height:8px;border-radius:999px;background:var(--line-strong);transition:width .4s var(--ease-out),background .3s var(--ease-out)}
+.tm-dot:hover::before{background:var(--royal)}
+.tm-dot[aria-current="true"]::before{width:22px;background:var(--accent)}
+.tm-note{margin:18px auto 0;max-width:62ch;text-align:center;color:var(--ink-2);font-size:.82rem}
+
+@media (min-width:1025px){
+  .tm-track{-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 8%,#000 92%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 8%,#000 92%,transparent 100%)}
+}
+@media (max-width:1024px){
+  .tm-track{--tm-w:min(520px,62vw)}
+}
+@media (max-width:720px){
+  .tm-track{--tm-w:84vw;--tm-gap:12px;padding-top:26px;padding-bottom:52px}
+  .tm-card{padding:22px 20px;border-radius:22px}
+  .tm-text{margin-bottom:20px}
+  .tm-by{padding-top:16px}
+}
+@media (pointer:coarse){
+  .tm-dot{width:26px;height:40px}
+}
+@media (prefers-reduced-motion:reduce){
+  .tm-card,.tm-btn,.tm-dot::before,.tm-track{transition:none}
+}
+</style>
+
+{%- assign t_total = section.blocks | size -%}
+{%- assign t_start = 2 -%}
+{%- if t_total < 2 -%}{%- assign t_start = 1 -%}{%- endif -%}
+{%- assign t_five = '1,2,3,4,5' | split: ',' -%}
+{%- capture t_titulo -%}{{ section.settings.titulo }}{{ section.settings.palabra_subrayada }}{%- endcapture -%}
+
+<section class="tm" id="testimonios" data-tone="light" data-tm-section="{{ section.id }}" aria-labelledby="tm-t-{{ section.id }}">
+  <div class="wrap">
+    <div class="tm-head rv">
+      {%- if section.settings.kicker != blank %}
+      <p class="kicker"><svg aria-hidden="true"><use href="#four"/></svg>{{ section.settings.kicker | escape }}</p>
+      {%- endif %}
+      <h2 class="display h2" id="tm-t-{{ section.id }}">{% if t_titulo != blank %}{{ section.settings.titulo | escape }}{% if section.settings.palabra_subrayada != blank %} <span class="ul">{{ section.settings.palabra_subrayada | escape }}<svg class="squig" viewBox="0 0 100 12" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M2 8 Q 12 2 22 7 T 42 7 T 62 7 T 82 7 T 98 6"/></svg></span>{% endif %}{% else %}Testimonios{% endif %}</h2>
+      {%- if section.settings.subtitulo != blank %}
+      <p class="lede">{{ section.settings.subtitulo | escape }}</p>
+      {%- endif %}
+    </div>
+  </div>
+
+  {%- if t_total > 0 %}
+  <div class="tm-stage rv">
+    <div class="tm-track" role="region" aria-roledescription="carrusel" aria-label="Testimonios de clientes" tabindex="0">
+      {%- for block in section.blocks %}
+      {%- assign t_idx = forloop.index -%}
+      {%- assign t_n = block.settings.estrellas | default: 5 -%}
+      {%- assign t_nombre = block.settings.nombre | strip -%}
+      {%- assign t_neg = block.settings.negocio | strip -%}
+      {%- assign t_ciu = block.settings.ciudad | strip -%}
+      {%- assign t_partes = t_nombre | split: ' ' -%}
+      {%- assign t_p1 = t_partes | first -%}
+      {%- assign t_p2 = t_partes | last -%}
+      {%- assign t_np = t_partes | size -%}
+      {%- capture t_ini -%}
+        {%- if t_np > 1 -%}{{ t_p1 | slice: 0, 1 }}{{ t_p2 | slice: 0, 1 }}{%- else -%}{{ t_p1 | slice: 0, 2 }}{%- endif -%}
+      {%- endcapture -%}
+      <div class="tm-slide{% if t_idx == t_start %} is-active{% endif %}" role="group" aria-roledescription="testimonio" aria-label="{{ t_idx }} de {{ t_total }}" {{ block.shopify_attributes }}>
+        <figure class="tm-card">
+          <div class="tm-top">
+            <span class="tm-qm" aria-hidden="true">&ldquo;</span>
+            <span class="tm-stars"><span aria-hidden="true">{% for t_s in t_five %}<span class="tm-st{% if forloop.index > t_n %} is-off{% endif %}">&#9733;</span>{% endfor %}</span><span class="sr-only">{{ t_n }} de 5 estrellas</span></span>
+          </div>
+          <blockquote class="tm-text"><p>{{ block.settings.texto | escape }}</p></blockquote>
+          <figcaption class="tm-by">
+            <span class="tm-av" aria-hidden="true">
+              {%- if block.settings.foto != blank -%}
+                {{ block.settings.foto | image_url: width: 120 | image_tag: loading: 'lazy', alt: '' }}
+              {%- else -%}
+                {{ t_ini | strip | upcase }}
+              {%- endif -%}
+            </span>
+            <span class="tm-who">
+              <cite class="tm-name">{{ t_nombre | escape }}</cite>
+              <span class="tm-biz">{{ t_neg | escape }}{% if t_neg != blank %}{% if t_ciu != blank %} &middot; {% endif %}{% endif %}{{ t_ciu | escape }}</span>
+            </span>
+          </figcaption>
+        </figure>
+      </div>
+      {%- endfor %}
+    </div>
+
+    <div class="tm-ctrl">
+      <button class="tm-btn tm-prev" type="button" aria-label="Testimonio anterior"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="tm-dots" role="group" aria-label="Elegir testimonio">
+        {%- for block in section.blocks %}
+        <button class="tm-dot" type="button" aria-label="Ir al testimonio {{ forloop.index }} de {{ forloop.length }}"{% if forloop.index == t_start %} aria-current="true"{% endif %}></button>
+        {%- endfor %}
+      </div>
+      <button class="tm-btn tm-next" type="button" aria-label="Testimonio siguiente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </div>
+    <p class="sr-only tm-live" aria-live="polite" aria-atomic="true"></p>
+    {%- if section.settings.nota != blank %}
+    <p class="tm-note">{{ section.settings.nota | escape }}</p>
+    {%- endif %}
+  </div>
+  {%- endif %}
+</section>
+
+{%- comment -%}
+  Marcado estructurado de reseñas: SOLO cuando "Testimonios verificados" está activo.
+  Los testimonios de ejemplo no deben marcarse como Review (políticas de Google y leyes de protección al consumidor).
+{%- endcomment -%}
+{%- if section.settings.testimonios_verificados %}
+{%- assign t_ld = 0 %}
+<script type="application/ld+json">
+[
+{%- for block in section.blocks -%}
+  {%- if block.settings.nombre != blank -%}
+    {%- if block.settings.texto != blank -%}
+      {%- assign t_rate = block.settings.estrellas | default: 5 -%}
+      {%- if t_ld > 0 -%},{%- endif -%}
+      {%- assign t_ld = t_ld | plus: 1 -%}
+  {
+    "@context": "https://schema.org",
+    "@type": "Review",
+    "author": { "@type": "Person", "name": {{ block.settings.nombre | strip_html | strip | json }} },
+    "reviewBody": {{ block.settings.texto | strip_html | strip | json }},
+    "reviewRating": { "@type": "Rating", "ratingValue": {{ t_rate | json }}, "bestRating": 5, "worstRating": 1 },
+    "itemReviewed": { "@id": {{ shop.url | append: '/#organization' | json }} }
+  }
+    {%- endif -%}
+  {%- endif -%}
+{%- endfor %}
+]
+</script>
+{%- endif %}
+
+<script>
+(function(){
+  'use strict';
+  var ID={{ section.id | json }};
+  var root=document.querySelector('[data-tm-section="'+ID+'"]');
+  if(!root||root.getAttribute('data-tm-ready'))return;
+  root.setAttribute('data-tm-ready','1');
+  var track=root.querySelector('.tm-track');
+  if(!track)return;
+  var slides=[].slice.call(track.querySelectorAll('.tm-slide'));
+  if(!slides.length)return;
+  var prev=root.querySelector('.tm-prev'),
+      next=root.querySelector('.tm-next'),
+      dots=[].slice.call(root.querySelectorAll('.tm-dot')),
+      live=root.querySelector('.tm-live'),
+      stage=root.querySelector('.tm-stage'),
+      mq=window.matchMedia?window.matchMedia('(prefers-reduced-motion: reduce)'):{matches:false},
+      last=slides.length-1,
+      cur=-1,pending=null,speak=false,raf=0,settleT=0,liveT=0,lastW=0,
+      AUTO_MS=5200,autoT=0,hov=false,foc=false,tch=false,inView=false,
+      editor=!!(window.Shopify&&window.Shopify.designMode);
+
+  function clampI(i){return Math.max(0,Math.min(last,i))}
+  function centerOf(i){var s=slides[i];return s.offsetLeft+s.offsetWidth/2-track.clientWidth/2}
+  function nearest(){
+    var mid=track.scrollLeft+track.clientWidth/2,best=0,d=Infinity;
+    for(var i=0;i<slides.length;i++){
+      var s=slides[i],dd=Math.abs(s.offsetLeft+s.offsetWidth/2-mid);
+      if(dd<d){d=dd;best=i}
+    }
+    return best;
+  }
+  function paint(i){
+    if(i===cur)return;
+    cur=i;
+    slides.forEach(function(s,k){s.classList.toggle('is-active',k===i)});
+    dots.forEach(function(d,k){if(k===i)d.setAttribute('aria-current','true');else d.removeAttribute('aria-current')});
+    if(prev)prev.setAttribute('aria-disabled',i===0?'true':'false');
+    if(next)next.setAttribute('aria-disabled',i===last?'true':'false');
+    if(speak&&live){
+      clearTimeout(liveT);
+      liveT=setTimeout(function(){live.textContent='Testimonio '+(cur+1)+' de '+slides.length;speak=false},350);
+    }
+  }
+  function place(i){track.scrollLeft=centerOf(i)}
+  function go(i,say){
+    i=clampI(i);pending=i;
+    if(say)speak=true;
+    var left=centerOf(i);
+    if(!mq.matches&&track.scrollTo)track.scrollTo({left:left,behavior:'smooth'});
+    else{track.scrollLeft=left;paint(i)}
+    clearTimeout(settleT);settleT=setTimeout(settle,700);
+    schedule();
+  }
+  function settle(){pending=null;paint(nearest())}
+  function onScroll(){
+    if(!raf)raf=requestAnimationFrame(function(){raf=0;paint(nearest())});
+    clearTimeout(settleT);settleT=setTimeout(settle,140);
+  }
+  function base(){return pending!==null?pending:(cur<0?0:cur)}
+
+  track.addEventListener('scroll',onScroll,{passive:true});
+  if(prev)prev.addEventListener('click',function(){if(prev.getAttribute('aria-disabled')!=='true')go(base()-1,true)});
+  if(next)next.addEventListener('click',function(){if(next.getAttribute('aria-disabled')!=='true')go(base()+1,true)});
+  dots.forEach(function(d,k){d.addEventListener('click',function(){go(k,true)})});
+  slides.forEach(function(s,k){s.addEventListener('click',function(){if(k!==cur)go(k,true)})});
+  (stage||root).addEventListener('keydown',function(e){
+    if(e.defaultPrevented||e.altKey||e.ctrlKey||e.metaKey||e.shiftKey)return;
+    var to;
+    if(e.key==='ArrowRight')to=base()+1;
+    else if(e.key==='ArrowLeft')to=base()-1;
+    else if(e.key==='Home')to=0;
+    else if(e.key==='End')to=last;
+    else return;
+    e.preventDefault();
+    go(to,true);
+  });
+
+  /* tamaños: se vuelve a centrar la tarjeta activa si cambia el ancho */
+  function onResize(){
+    var w=track.clientWidth;
+    if(w===lastW)return;
+    lastW=w;
+    place(cur<0?0:cur);
+  }
+  if(window.ResizeObserver)new ResizeObserver(onResize).observe(track);
+  else window.addEventListener('resize',onResize);
+
+  /* editor de temas: al elegir un bloque, se centra su tarjeta */
+  document.addEventListener('shopify:block:select',function(e){
+    if(!root.isConnected)return;
+    var i=slides.indexOf(e.target);
+    if(i>-1)go(i,false);
+  });
+
+  /* autoplay: avanza solo cada ~5 s y, al llegar a la última, vuelve a la primera con un fundido.
+     Se detiene con el mouse encima, con el foco del teclado dentro del carrusel o mientras se toca, y se reanuda al salir.
+     No corre con prefers-reduced-motion, en el editor de temas, con la pestaña oculta ni con la sección fuera de pantalla. */
+  function autoOn(){return !mq.matches&&!editor&&slides.length>1}
+  function held(){return hov||foc||tch}
+  function stop(){clearTimeout(autoT);autoT=0}
+  function schedule(delay){
+    stop();
+    if(!autoOn()||held()||!inView||document.hidden)return;
+    autoT=setTimeout(tick,delay||AUTO_MS);
+  }
+  function wrapToStart(){
+    track.classList.add('is-wrap');
+    setTimeout(function(){pending=null;place(0);paint(0);track.classList.remove('is-wrap')},370);
+  }
+  function tick(){
+    autoT=0;
+    if(!autoOn()||held()||!inView||document.hidden)return;
+    if(base()>=last)wrapToStart();else go(base()+1,false);
+    schedule();
+  }
+  var area=stage||root;
+  area.addEventListener('pointerenter',function(e){if(e.pointerType!=='touch'){hov=true;stop()}});
+  area.addEventListener('pointerleave',function(e){if(e.pointerType!=='touch'){hov=false;schedule()}});
+  area.addEventListener('pointerdown',function(e){if(e.pointerType==='touch'){tch=true;stop()}});
+  function touchEnd(e){if(e.pointerType==='touch'&&tch){tch=false;schedule(AUTO_MS+2000)}}
+  area.addEventListener('pointerup',touchEnd);
+  area.addEventListener('pointercancel',touchEnd);
+  area.addEventListener('focusin',function(e){
+    var vis=true;try{vis=e.target.matches(':focus-visible')}catch(err){}
+    if(vis){foc=true;stop()}
+  });
+  area.addEventListener('focusout',function(e){if(!e.relatedTarget||!area.contains(e.relatedTarget)){foc=false;schedule()}});
+  document.addEventListener('visibilitychange',function(){if(document.hidden)stop();else schedule()});
+  if(mq.addEventListener)mq.addEventListener('change',function(){if(mq.matches)stop();else schedule()});
+  if(window.IntersectionObserver){
+    new IntersectionObserver(function(es){inView=es[es.length-1].isIntersecting;if(inView)schedule();else stop()},{threshold:.3}).observe(root);
+  }else{inView=true}
+
+  /* inicio: centrado en la 2.ª tarjeta para que asomen vecinas a ambos lados */
+  /* se mide en el primer cuadro tras leer el HTML: medir antes fuerza un layout completo de la pagina y traba la entrada */
+  function init(){
+    lastW=track.clientWidth;
+    var start=slides.length>1?1:0;
+    place(start);
+    paint(start);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){requestAnimationFrame(init)});
+  else requestAnimationFrame(init);
+})();
+</script>
+
+{% schema %}
+{
+  "name": "H4 · Testimonios",
+  "max_blocks": 12,
+  "settings": [
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "Etiqueta superior",
+      "default": "Lo que dicen nuestros clientes"
+    },
+    {
+      "type": "text",
+      "id": "titulo",
+      "label": "Título",
+      "default": "Cuando tu empaque tiene marca,"
+    },
+    {
+      "type": "text",
+      "id": "palabra_subrayada",
+      "label": "Palabra subrayada",
+      "info": "Va al final del título, con el subrayado a mano de la marca.",
+      "default": "se nota."
+    },
+    {
+      "type": "textarea",
+      "id": "subtitulo",
+      "label": "Subtítulo",
+      "default": "Las pymes y los Dark Kitchens de la Ciudad de México cuentan cómo es pedir su empaque con marca en línea."
+    },
+    {
+      "type": "text",
+      "id": "nota",
+      "label": "Nota bajo el carrusel",
+      "info": "Déjala vacía cuando los testimonios sean de clientes reales.",
+      "default": "Testimonios de ejemplo de la página de prueba. Se reemplazan por reseñas de clientes reales antes del lanzamiento."
+    },
+    {
+      "type": "checkbox",
+      "id": "testimonios_verificados",
+      "label": "Testimonios verificados (marcado Review para buscadores)",
+      "info": "Actívalo solo si TODOS los testimonios son de clientes reales, con su permiso. Publica marcado estructurado (Review) para Google. Con testimonios de ejemplo debe quedar desactivado: marcar reseñas falsas viola las políticas de Google y las leyes de protección al consumidor.",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonio",
+      "name": "Testimonio",
+      "settings": [
+        {
+          "type": "text",
+          "id": "nombre",
+          "label": "Nombre",
+          "default": "Nombre Apellido"
+        },
+        {
+          "type": "text",
+          "id": "negocio",
+          "label": "Negocio",
+          "default": "Nombre del negocio"
+        },
+        {
+          "type": "text",
+          "id": "ciudad",
+          "label": "Ciudad o alcaldía",
+          "default": "Ciudad de México"
+        },
+        {
+          "type": "textarea",
+          "id": "texto",
+          "label": "Testimonio",
+          "default": "Escribe aquí lo que dijo tu cliente, en una a tres frases."
+        },
+        {
+          "type": "range",
+          "id": "estrellas",
+          "label": "Estrellas",
+          "min": 1,
+          "max": 5,
+          "step": 1,
+          "default": 5
+        },
+        {
+          "type": "image_picker",
+          "id": "foto",
+          "label": "Foto (opcional)",
+          "info": "Si no subes foto se muestran las iniciales. Usa solo fotos de clientes reales y con su permiso."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "H4 · Testimonios",
+      "blocks": [
+        {
+          "type": "testimonio",
+          "settings": {
+            "nombre": "Mariana Soto",
+            "negocio": "Smash Lumbre",
+            "ciudad": "Naucalpan",
+            "texto": "Pedí mis primeras 50 cajas con mi logo para probar. El precio estaba a la vista, pagué en línea y no tuve que cotizar nada.",
+            "estrellas": 5
+          }
+        },
+        {
+          "type": "testimonio",
+          "settings": {
+            "nombre": "Daniela Ortega",
+            "negocio": "Sushi Marea",
+            "ciudad": "Coyoacán",
+            "texto": "Aprobé el diseño antes de que lo produjeran. Mis rolls ahora salen en cajas con mi marca y varios clientes ya las suben a sus historias.",
+            "estrellas": 5
+          }
+        },
+        {
+          "type": "testimonio",
+          "settings": {
+            "nombre": "Ricardo Barrera",
+            "negocio": "Horno Rústico Pizza",
+            "ciudad": "Tlalnepantla",
+            "texto": "Antes mis pizzas salían en cajas blancas que cualquiera tiene. Ahora la tapa lleva mi logo y sé cuánto cuesta cada caja antes de comprar.",
+            "estrellas": 5
+          }
+        },
+        {
+          "type": "testimonio",
+          "settings": {
+            "nombre": "Lucía Hernández",
+            "negocio": "Panadería Dulce Hogar",
+            "ciudad": "Azcapotzalco",
+            "texto": "Me tardé un poco en decidir el diseño, pero poder aprobarlo antes de producir me dio confianza. Empecé con 50 piezas y las bolsas quedaron muy bonitas.",
+            "estrellas": 4
+          }
+        }
+      ]
+    }
+  ],
+  "enabled_on": {
+    "templates": [
+      "index"
+    ]
+  }
+}
+{% endschema %}

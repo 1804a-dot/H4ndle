@@ -1,0 +1,157 @@
+<!-- ============ CREAR MI EMPAQUE ============ -->
+{%- comment -%}
+  Configurador "Ponle tu marca. Mira el precio. Listo." (la lógica vive en assets/h4ndle-landing.js).
+  Por pedido del cliente (10-oct) ya no se ve como sección fija en la home: el mismo configurador queda oculto en un panel
+  (dialog) que se abre desde "Personalizar" de cada producto (con ese producto ya elegido), desde cualquier enlace a #crear
+  ("Crear mi empaque" del hero y del cierre), con la URL /#crear y con /?personalizar=<handle del producto>#crear (página de producto).
+  Para volver a mostrarlo como sección en la página, como antes: en el editor de temas activa
+  "Mostrar como sección en la página" en esta sección (H4 · Crear mi empaque). No se borró nada del contenido.
+{%- endcomment -%}
+{%- assign cr_inline = section.settings.inline -%}
+{%- capture cr_head -%}
+      <p class="kicker"><svg aria-hidden="true"><use href="#four"/></svg>Crear mi empaque</p>
+      <h2 class="display h2" id="cr-t">Ponle tu marca. Mira el precio. Listo.</h2>
+      <p class="lede">Elige tu empaque, sube tu logo, escoge color, estilo y cantidad. El precio y la fecha de llegada se calculan mientras lo armas.</p>
+{%- endcapture -%}
+{%- capture cr_grid -%}
+    <div class="grid">
+      <div class="preview">
+        <div class="stagebox"><div class="floaty" id="cfgBox" role="img" aria-label="Vista previa ilustrativa de tu empaque con tu marca"></div></div>
+        <div class="pick"><img id="cfgThumb" src="{{ 'p-caja-asa.jpg' | asset_url }}" width="56" height="56" loading="lazy" decoding="async" alt=""><div><span>Tu empaque</span><b id="cfgProdName">Caja con asa</b></div></div>
+        <p class="note">Vista previa ilustrativa. Tu diseño final lo prepara nuestro equipo y lo apruebas antes de producir.</p>
+      </div>
+      <form class="cfg" id="cfg" novalidate aria-label="Configurador de empaque personalizado">
+        <fieldset>
+          <legend>1. Elige tu empaque</legend>
+          <div class="opts" id="cfgProducts"></div>
+        </fieldset>
+        <fieldset>
+          <legend>2. Nombre de tu cocina</legend>
+          <label class="field"><span class="sr-only">Nombre de tu cocina</span><input type="text" id="cfgName" maxlength="18" placeholder="Nombre de tu cocina" autocomplete="organization"><small>Así se verá en la caja.</small></label>
+        </fieldset>
+        <fieldset>
+          <legend>3. Tu logo <span class="opt-tag">opcional</span></legend>
+          <label class="drop" id="logoDrop">
+            <input type="file" id="cfgLogo" class="sr-only" accept="image/png,image/jpeg,image/webp,image/svg+xml">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0L7 9m5-5l5 5M4 16v2.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span><b>Sube tu logo</b> o arrástralo aquí</span>
+            <small>PNG con fondo transparente o SVG se ven mejor. Máximo 5 MB.</small>
+          </label>
+          <div class="logo-row" id="logoRow" hidden>
+            <span class="lthumb"><img id="logoThumb" alt="Vista previa de tu logo" width="52" height="52" decoding="async"></span>
+            <span class="lname" id="logoName"></span>
+            <label class="chk"><input type="checkbox" id="logoWhite" checked><span>Mostrar en blanco</span></label>
+            <button type="button" class="lrm" id="logoRemove">Quitar</button>
+          </div>
+          <p class="lerr" id="logoErr" role="alert" hidden></p>
+        </fieldset>
+        <fieldset>
+          <legend>4. Color de tu marca</legend>
+          <div class="opts" id="cfgColors"></div>
+        </fieldset>
+        <fieldset>
+          <legend>5. Estilo</legend>
+          <div class="opts pats" id="cfgPatterns"></div>
+        </fieldset>
+        <fieldset>
+          <legend>6. ¿Cuántas piezas?</legend>
+          <div class="qty">
+            <button type="button" class="qty-btn" id="qMinus" aria-label="Quitar 50 piezas">−</button>
+            <input type="range" id="cfgQty" min="50" max="5000" step="50" value="250" aria-label="Cantidad de piezas, de 50 a 5,000">
+            <button type="button" class="qty-btn" id="qPlus" aria-label="Agregar 50 piezas">+</button>
+            <output id="cfgQtyOut" for="cfgQty">250 pzas</output>
+          </div>
+          <div class="tiers" id="cfgTiers"></div>
+        </fieldset>
+        <div class="summary">
+          <div class="row"><span>Precio por pieza</span><b id="cfgUnit">$0.00</b></div>
+          <div class="row total"><span>Total</span><b id="cfgTotal">$0.00</b></div>
+          <p class="eta"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 3v4M16 3v4M3.5 10h17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span id="cfgEta">Calculando fecha de llegada.</span></p>
+          <button type="submit" class="btn" id="cfgAdd">Agregar al carrito</button>
+          <p class="lerr" id="cfgMsg" role="alert" hidden></p>
+          <small>Después del pago recibes tu propuesta de diseño para aprobarla.</small>
+        </div>
+      </form>
+    </div>
+{%- endcapture -%}
+
+{%- if cr_inline -%}
+<section class="create dark" id="crear" data-tone="dark" aria-labelledby="cr-t">
+  <div class="wrap">
+    <div class="head rv">
+{{ cr_head }}
+    </div>
+{{ cr_grid }}
+  </div>
+</section>
+{%- else -%}
+<style>
+/* H4 · Crear mi empaque como panel (dialog nativo con showModal). Reutiliza .create/.cfg/.preview/.summary de h4ndle.css; aquí solo va el contenedor. */
+html.cr-lock{overflow:hidden}
+html.cr-lock body{padding-right:var(--cr-sbw,0px)}
+.cr-ov{position:fixed;inset:0;z-index:120;width:100%;max-width:none;height:100%;max-height:none;margin:0;padding:clamp(12px,2.6vw,36px);border:0;background:transparent;color:var(--paper);overflow:hidden}
+.cr-ov:not([open]){display:none}
+.cr-ov[open]{display:flex;align-items:center;justify-content:center}
+.cr-ov::backdrop{background:transparent}
+.cr-scrim{position:absolute;inset:0;background:rgba(4,10,30,.66);opacity:0;transition:opacity .4s var(--ease-out)}
+.cr-ov.on .cr-scrim{opacity:1}
+.cr-panel{position:relative;display:flex;flex-direction:column;width:min(1180px,100%);height:min(100%,920px);padding:0;border-radius:26px;overflow:hidden;box-shadow:0 50px 120px -40px rgba(0,0,0,.8),0 0 0 1px var(--line-dark);opacity:0;transform:translate3d(0,28px,0) scale(.985);transition:opacity .35s var(--ease-out),transform .5s var(--ease-out)}
+.cr-ov.on .cr-panel{opacity:1;transform:none}
+.cr-top{flex:none;display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding:clamp(18px,2.4vw,30px) clamp(18px,3vw,44px) clamp(14px,1.8vw,22px);border-bottom:1px solid var(--line-dark)}
+.cr-top .head{margin:0;min-width:0}
+.cr-top .kicker{margin-bottom:10px}
+.cr-top .h2{font-size:clamp(1.45rem,2.5vw,2.4rem);max-width:none}
+.cr-top .lede{margin-top:10px;font-size:clamp(.95rem,1.05vw,1.02rem);max-width:66ch}
+.cr-x{flex:none;color:var(--paper);border-color:var(--line-dark);transition:background .3s var(--ease-out),border-color .3s var(--ease-out)}
+.cr-x:hover{background:rgba(238,243,255,.08);border-color:var(--paper-2)}
+.cr-body{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:clamp(20px,3vw,40px) clamp(18px,3vw,44px) clamp(24px,3.4vw,48px);scrollbar-width:thin;scrollbar-color:rgba(169,187,224,.4) transparent}
+.cr-ov .preview{top:0}
+.cr-ov .preview .stagebox{width:min(100%,440px,max(240px,calc((100vh - 420px)*.9)))}
+.cr-ov .summary .lerr{margin:12px 0 0;text-align:center}
+@media (max-width:900px){.cr-ov .preview .stagebox{width:min(62vw,300px)}}
+@media (max-width:720px){
+  .cr-ov{padding:0}
+  .cr-panel{width:100%;height:100%;border-radius:0;box-shadow:none;opacity:1;transform:translate3d(0,100%,0);transition:transform .45s var(--ease-out)}
+  .cr-top{align-items:center;padding:max(12px,env(safe-area-inset-top)) 16px 12px}
+  .cr-top .kicker{margin-bottom:6px}
+  .cr-top .h2{font-size:1.3rem}
+  .cr-top .lede{display:none}
+  .cr-body{padding:18px 16px calc(28px + env(safe-area-inset-bottom))}
+}
+@media (prefers-reduced-motion:reduce){.cr-scrim,.cr-panel{transition:none}}
+</style>
+<dialog class="cr-ov" id="crear" aria-modal="true" aria-labelledby="cr-t">
+  <div class="cr-scrim" data-cr-close aria-hidden="true"></div>
+  <div class="cr-panel create dark">
+    <div class="cr-top">
+      <div class="head">
+{{ cr_head }}
+      </div>
+      <button type="button" class="x cr-x" data-cr-close aria-label="Cerrar el configurador"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+    </div>
+    <div class="cr-body">
+{{ cr_grid }}
+    </div>
+  </div>
+</dialog>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "H4 · Crear mi empaque",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "inline",
+      "label": "Mostrar como sección en la página",
+      "default": false,
+      "info": "Apagado (pedido del cliente, 10-oct): el configurador vive oculto en un panel que abre “Personalizar” de cada producto y cualquier enlace a #crear. Enciéndelo para volver a mostrarlo como sección fija en la home, como antes."
+    }
+  ],
+  "enabled_on": {
+    "templates": [
+      "index"
+    ]
+  }
+}
+{% endschema %}
